@@ -35,18 +35,19 @@ export const moduleScreen = {
         if (!м) return нетМодуля();
 
         const п = прогрессМодуля(м);
+        const чтение = м.id.startsWith('r');
         const шпаргалки = разделыШпаргалки().filter((р) => р.drill === м.id);
         const слабые = Object.entries(хранилище.всё().темы)
             .filter(([тема, н]) => ТЕМЫ[тема]?.module === м.id && н.ошибок > 0)
             .sort((а, б) => б[1].ошибок - а[1].ошибок);
 
         return страница({
-            вкладка: 'path',
+            вкладка: чтение ? 'lesen' : 'path',
             заголовок: м.short || м.title,
-            назад: '#/',
+            назад: чтение ? '#/lesen' : '#/',
             содержимое: ui.html`
                 <div class="card">
-                    <div class="q-type">${м.id.startsWith('g') ? `Модуль ${м.order}` : 'Техника письма'}</div>
+                    <div class="q-type">${м.id.startsWith('g') ? `Модуль ${м.order}` : чтение ? `Lesen · часть ${м.teil}` : 'Техника письма'}</div>
                     <h2 style="margin-top:4px">${м.title}</h2>
                     <p class="lead" style="margin-top:8px">${м.goal}</p>
                     <p class="muted small" style="margin-top:8px">${м.why}</p>
@@ -66,6 +67,19 @@ export const moduleScreen = {
                     <a class="btn ${п.теория ? 'primary' : 'soft'} block" href="#/drill/${м.id}">Тренировка: раунд из 10 упражнений</a>
                     ${м.apply ? ui.html`<a class="btn soft block" href="#/mini/${м.id}">${п.мини ? '✓ ' : ''}Мини-письмо с самопроверкой</a>` : ''}
                 </div>
+
+                ${м.sets ? ui.html`
+                    <div class="sec">Наборы заданий: как на экзамене</div>
+                    <div class="links">${м.sets.map((с, i) => {
+                        const н = хранилище.набор(с.id);
+                        return ui.html`
+                            <a class="link" href="#/read/${с.id}">
+                                <span class="link-ico">${i + 1}</span>
+                                <span class="link-main"><span class="link-title">${с.title}</span><br>
+                                    <span class="link-sub">${н.попыток ? `лучший результат ${н.лучший} из ${н.всего || с.items.length} · попыток ${н.попыток}` : `${с.items.length} заданий`}</span></span>
+                                <span class="link-end">›</span>
+                            </a>`;
+                    })}</div>` : ''}
 
                 ${слабые.length ? ui.html`
                     <div class="sec">Где вы ошибались</div>

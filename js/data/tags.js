@@ -35,7 +35,15 @@ export const ТЕМЫ = {
     register:     { title: 'du или Sie, обращение, прощание', module: 'l01' },
     aufbau:       { title: 'Структура письма',                module: 'l01' },
     leitpunkt:    { title: 'Раскрытие пунктов задания',       module: 'l02' },
-    wortschatz:   { title: 'Выбор слова',                     module: 'l02' }
+    wortschatz:   { title: 'Выбор слова',                     module: 'l02' },
+
+    // Lesen: по одной теме на часть экзамена и одна общая для лексики
+    lesen_suche:  { title: 'Чтение: таблички и списки (Teil 1)',          module: 'r01' },
+    lesen_ads:    { title: 'Чтение: объявления и ситуации (Teil 2)',      module: 'r02' },
+    lesen_text:   { title: 'Чтение: короткие сообщения (Teil 3)',         module: 'r03' },
+    lesen_info:   { title: 'Чтение: инструкции и условия (Teil 4)',       module: 'r04' },
+    lesen_brief:  { title: 'Чтение: слова и формы в письме (Teil 5)',     module: 'r05' },
+    lesen_wort:   { title: 'Лексика для чтения',                          module: 'r02' }
 };
 
 export const ИМЕНА_ТЕМ = Object.keys(ТЕМЫ);

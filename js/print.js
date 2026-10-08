@@ -12,8 +12,10 @@ import { разметка } from './core/markup.js';
 import { разложитьПлашки } from './core/exercise.js';
 import { заполнить } from './core/check.js';
 import {
-    ГРАММАТИКА, ТЕХНИКА, СИТУАЦИИ, ОШИБКИ, ФРАЗЫ, СПРАВОЧНИК, ШПАРГАЛКА, ЭКЗАМЕН
+    ГРАММАТИКА, ТЕХНИКА, ЧТЕНИЕ, СИТУАЦИИ, ОШИБКИ, ФРАЗЫ, СПРАВОЧНИК, ШПАРГАЛКА, СПРАВОЧНИК_ЧТЕНИЯ, ЭКЗАМЕН
 } from './data/catalog.js';
+import { подписьОтвета } from './core/lesen.js';
+import { блокНабора } from './modules/lesen.js';
 import { блоки } from './modules/blocks.js';
 import { НАЗВАНИЕ } from './version.js';
 
@@ -176,7 +178,7 @@ function разделСправочников(список, заголовок) 
 function модуль(м) {
     return ui.html`
         <section class="p-module">
-            <div class="p-kicker">${м.id.startsWith('g') ? `Модуль ${м.order}` : 'Техника письма'}</div>
+            <div class="p-kicker">${м.id.startsWith('g') ? `Модуль ${м.order}` : м.id.startsWith('r') ? `Lesen · Teil ${м.teil}` : 'Техника письма'}</div>
             <h2>${м.title}</h2>
             <p class="p-goal">${м.goal}</p>
             ${блоки(м.theory)}
@@ -241,6 +243,30 @@ function ситуация(с) {
         </section>`;
 }
 
+/** Часть Lesen: стратегия и упражнения, затем наборы заданий. */
+function частьЧтения(ч) {
+    return ui.html`
+        ${модуль(ч)}
+        ${ч.sets.map((с, i) => ui.html`
+            <section class="p-set">
+                <div class="p-kicker">Lesen · Teil ${ч.teil} · набор ${i + 1}</div>
+                <h3>${с.title}</h3>
+                ${блокНабора(ч, с, {}, false, { экзамен: true })}
+            </section>`)}`;
+}
+
+function ключиЧтения() {
+    return ui.html`
+        ${ЧТЕНИЕ.map((ч) => ui.html`
+            <div class="p-keys-block">
+                <h3>Lesen · Teil ${ч.teil}: наборы заданий</h3>
+                ${ч.sets.map((с, i) => ui.html`
+                    <h4>Набор ${i + 1}: ${с.title}</h4>
+                    <ol class="p-keys">${с.items.map((п) => ui.html`<li><span class="de">${подписьОтвета(п, ч.teil, п.answer)}</span><span class="p-why">${разметка(п.why)}</span></li>`)}</ol>
+                    <p class="p-why">Слова: ${(с.glossary || []).map((г) => `${г.de} — ${г.ru}`).join('; ')}</p>`)}
+            </div>`)}`;
+}
+
 function клиника() {
     return ui.html`
         <section class="p-clinic">
@@ -273,6 +299,8 @@ function ключиВсе() {
             <h2>Ключи к упражнениям</h2>
             ${модули.map((м) => ключиМодуля(м, м.exercises))}
             ${СИТУАЦИИ.map((с) => ключиМодуля({ id: с.id, short: с.title }, с.drills || []))}
+            ${ЧТЕНИЕ.map((ч) => ключиМодуля(ч, ч.exercises))}
+            ${ключиЧтения()}
         </section>`;
 }
 
@@ -285,7 +313,7 @@ const документ = ui.html`
     </section>
 
     <section class="p-part"><h1 class="p-part-title">Шпаргалка</h1>
-        ${разделСправочников([...ШПАРГАЛКА, ...СПРАВОЧНИК])}
+        ${разделСправочников([...ШПАРГАЛКА, ...СПРАВОЧНИК_ЧТЕНИЯ, ...СПРАВОЧНИК])}
     </section>
 
     <section class="p-part"><h1 class="p-part-title">Грамматика</h1></section>
@@ -294,6 +322,12 @@ const документ = ui.html`
     <section class="p-part"><h1 class="p-part-title">Письмо</h1></section>
     ${ТЕХНИКА.map(модуль)}
     ${СИТУАЦИИ.map(ситуация)}
+
+    ${ЧТЕНИЕ.length ? ui.html`
+        <section class="p-part"><h1 class="p-part-title">Lesen: чтение</h1>
+            <p class="p-goal">Пять частей экзамена: у каждой своя стратегия, упражнения и шесть наборов заданий, как на экзамене. Отмечайте ответы ручкой, ключи — в конце книги.</p>
+        </section>
+        ${ЧТЕНИЕ.map(частьЧтения)}` : ''}
 
     <section class="p-part"><h1 class="p-part-title">Клиника ошибок и фразы</h1></section>
     ${клиника()}

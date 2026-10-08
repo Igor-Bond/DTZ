@@ -11,8 +11,9 @@ import { хранилище } from '../core/store.js';
 
 const ВКЛАДКИ = [
     { id: 'path', href: '#/', ico: '◉', title: 'Путь' },
-    { id: 'cheat', href: '#/cheat', ico: '☰', title: 'Шпаргалка' },
     { id: 'letters', href: '#/letters', ico: '✉', title: 'Письма' },
+    { id: 'lesen', href: '#/lesen', ico: '📖', title: 'Lesen' },
+    { id: 'cheat', href: '#/cheat', ico: '☰', title: 'Шпаргалка' },
     { id: 'review', href: '#/review', ico: '↻', title: 'Повтор' },
     { id: 'more', href: '#/more', ico: '⋯', title: 'Ещё' }
 ];

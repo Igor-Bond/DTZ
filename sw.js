@@ -16,7 +16,7 @@
  * приложений останется старый кэш.
  */
 
-const APP_VERSION = 'v1';
+const APP_VERSION = 'v2';
 const CACHE_NAME = `briefe-${APP_VERSION}`;
 
 const СРОК_СЕТИ = 3000;
@@ -36,6 +36,7 @@ const ФАЙЛЫ = [
     'js/core/brief.js',
     'js/core/check.js',
     'js/core/exercise.js',
+    'js/core/lesen.js',
     'js/core/markup.js',
     'js/core/progress.js',
     'js/core/session.js',
@@ -58,6 +59,12 @@ const ФАЙЛЫ = [
     'js/data/grammar/g10-verbindung.js',
     'js/data/grammar/g11-schreibung.js',
     'js/data/index.js',
+    'js/data/lesen/r01-verzeichnisse.js',
+    'js/data/lesen/r02-anzeigen.js',
+    'js/data/lesen/r03-meldungen.js',
+    'js/data/lesen/r04-info.js',
+    'js/data/lesen/r05-brief.js',
+    'js/data/lesen-ref.js',
     'js/data/letters/l01-aufbau.js',
     'js/data/letters/l02-leitpunkte.js',
     'js/data/letters/s01-fehlen.js',
@@ -80,6 +87,7 @@ const ФАЙЛЫ = [
     'js/modules/drill.js',
     'js/modules/home.js',
     'js/modules/input.js',
+    'js/modules/lesen.js',
     'js/modules/letters.js',
     'js/modules/module.js',
     'js/modules/shell.js',

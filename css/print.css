@@ -135,6 +135,24 @@ body.print {
 .p-fixes .wird { color: var(--ok); font-weight: 700; }
 .p-why { color: var(--muted); font-size: 9.5pt; }
 
+/* ---------- Lesen ---------- */
+
+.p-set { break-before: page; }
+.print .r-part { margin-top: 6pt; }
+.print .r-part-head { display: none; }
+.print .r-situation { font-size: 12.5pt; }
+.print .r-instruction { font-size: 10.5pt; }
+.print .r-card { border-width: 1pt; padding: 8pt 10pt; break-inside: avoid; }
+.print .r-ad { break-inside: avoid; font-size: 10.5pt; }
+.print .r-q { break-inside: avoid; padding: 6pt 8pt; margin-top: 6pt; }
+.print .r-qtext { font-size: 11pt; }
+.print .r-opts { gap: 3pt; margin-top: 4pt; }
+.print .r-opts.compact { gap: 6pt; }
+.print .r-opt { padding: 3pt 8pt; font-size: 10.5pt; border: 0.6pt solid var(--line); background: #fff; }
+.print .r-opt.pill { min-width: 24pt; padding: 2pt 6pt; }
+.print .r-letter-body { font-size: 11pt; line-height: 1.7; }
+.print .r-gap { background: #fff; border-bottom: 0.8pt solid var(--ink); border-radius: 0; color: var(--ink); }
+
 /* ---------- клиника и ключи ---------- */
 
 .p-err { break-inside: avoid; margin: 6pt 0 10pt; padding: 6pt 10pt; border: 0.6pt solid var(--line); border-radius: 3pt; }

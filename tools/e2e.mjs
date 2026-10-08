@@ -60,7 +60,9 @@ async function открыть(хэш) {
 // ---------------- 1. экраны ----------------
 
 const экраны = [
-    '', 'cheat', 'letters', 'review', 'more', 'errors', 'phrases', 'cards', 'about', 'progress', 'exam',
+    '', 'cheat', 'letters', 'lesen', 'review', 'more', 'errors', 'phrases', 'cards', 'about', 'progress', 'exam',
+    ...данные.ЧТЕНИЕ.flatMap((ч) => ч.sets.map((с) => `read/${с.id}`)),
+    ...Array.from({ length: данные.вариантовПроб() }, (_, i) => `lesenexam/${i + 1}`),
     ...данные.МОДУЛИ.flatMap((м) => [`module/${м.id}`, `theory/${м.id}`, ...(м.apply ? [`mini/${м.id}`] : [])]),
     ...данные.СИТУАЦИИ.map((с) => `situation/${с.id}`),
     ...данные.СИТУАЦИИ.flatMap((с) => с.tasks.map((з) => `write/${з.id}`)),
@@ -140,7 +142,7 @@ for (const [ключ, список] of [
 
     // Источник, который выдаёт всё сразу, а не раунд из 10: ситуации и записи клиники.
     // Для модулей берём «tag:» нельзя — там тема, а не модуль, поэтому проходим по раундам.
-    await открыть(`drill/${/^[gls]\d\d$/.test(ключ) ? 'all:' : ''}${ключ}`);
+    await открыть(`drill/${/^[glrs]\d\d$/.test(ключ) ? 'all:' : ''}${ключ}`);
 
     const сколько = список.length;
     const видели = new Set();
@@ -243,13 +245,65 @@ await стр.fill('#letter', данные.СИТУАЦИИ[0].tasks[0].weak?.tex
 await стр.click('[data-action="проверить-письмо"]');
 await снимок('разбор-слабого-письма');
 
+// ---------------- 4. Lesen: наборы и пробы ----------------
+
+const значениеДляКнопки = (в) => String(в);
+
+async function решитьНаборы(наборы) {
+    for (const п of наборы.flatMap((н) => н.items)) {
+        await стр.click(`[data-action="лес-ответ"][data-q="${п.id}"][data-v="${значениеДляКнопки(п.answer)}"]`);
+    }
+}
+
+let наборовЧтения = 0;
+
+for (const ч of данные.ЧТЕНИЕ) {
+    for (const с of ч.sets) {
+        await открыть(`read/${с.id}`);
+
+        try {
+            await решитьНаборы([с]);
+            await стр.click('[data-action="лес-проверить"]');
+            const итог = (await стр.textContent('.ring span', { timeout: 3000 })).trim();
+
+            if (итог !== `${с.items.length}/${с.items.length}`) провал(`Lesen ${с.id}`, `верные ответы дали ${итог}`);
+            else наборовЧтения += 1;
+
+            const красных = await стр.locator('.r-q.bad').count();
+            if (красных) провал(`Lesen ${с.id}`, `красных вопросов после верных ответов: ${красных}`);
+        } catch (e) {
+            провал(`Lesen ${с.id}`, e.message.split('\n')[0]);
+        }
+    }
+}
+
+for (let k = 1; k <= данные.вариантовПроб(); k++) {
+    await открыть(`lesenexam/${k}`);
+
+    try {
+        await решитьНаборы(данные.вариантПробы(k).map((х) => х.набор));
+        await стр.click('[data-action="проба-чтения-сдать"]');
+        const итог = (await стр.textContent('.ring span', { timeout: 3000 })).trim();
+        if (итог !== '25/25') провал(`проба Lesen ${k}`, `верные ответы дали ${итог}`);
+    } catch (e) {
+        провал(`проба Lesen ${k}`, e.message.split('\n')[0]);
+    }
+}
+
+if (данные.ЧТЕНИЕ.length) {
+    await открыть('lesen');
+    await снимок('lesen-хаб');
+    await открыть(`read/${данные.ЧТЕНИЕ[1].sets[0].id}`);
+    await снимок('lesen-набор-объявления');
+}
+
 // ---------------- итог ----------------
 
 await браузер.close();
 
 const уникальные = [...new Set(ошибкиСтраницы)];
 
-console.log(`Экранов открыто: ${экраны.length}. Упражнений принято экраном: ${пройдено} из ${всеУпражнения.length}.`);
+console.log(`Экранов открыто: ${экраны.length}. Упражнений принято экраном: ${пройдено} из ${всеУпражнения.length}. Наборов Lesen решено: ${наборовЧтения}.`);
 
 if (уникальные.length) {
     console.log(`\nОшибки на странице (${уникальные.length}):`);

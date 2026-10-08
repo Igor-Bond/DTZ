@@ -25,7 +25,8 @@ const список = (каталог, шаблон) => {
 const грамматика = список('grammar', /^g\d\d.*\.js$/);
 const техника = список('letters', /^l\d\d.*\.js$/);
 const ситуации = список('letters', /^s\d\d.*\.js$/);
-const одиночные = ['errors', 'phrases', 'reference', 'cheatsheet', 'exam'].filter((и) => existsSync(path.join(ДАННЫЕ, `${и}.js`)));
+const чтение = список('lesen', /^r\d\d.*\.js$/);
+const одиночные = ['errors', 'phrases', 'reference', 'cheatsheet', 'lesen-ref', 'exam'].filter((и) => existsSync(path.join(ДАННЫЕ, `${и}.js`)));
 
 const строки = [
     '/**',
@@ -39,24 +40,27 @@ const имя = (файл) => `д_${файл.replace(/\.js$/, '').replace(/[^a-z0
 
 for (const ф of грамматика) строки.push(`import ${имя(ф)} from './grammar/${ф}';`);
 for (const ф of [...техника, ...ситуации]) строки.push(`import ${имя(ф)} from './letters/${ф}';`);
-for (const и of одиночные) строки.push(`import д_${и} from './${и}.js';`);
+for (const ф of чтение) строки.push(`import ${имя(ф)} from './lesen/${ф}';`);
+for (const и of одиночные) строки.push(`import ${имя(и + '.js')} from './${и}.js';`);
 
 const массив = (файлы) => `[${файлы.map(имя).join(', ')}]`;
-const одно = (и) => (одиночные.includes(и) ? `д_${и}` : '[]');
+const одно = (и) => (одиночные.includes(и) ? имя(`${и}.js`) : '[]');
 
 строки.push(
     '',
     `export const ГРАММАТИКА = ${массив(грамматика)}.sort((а, б) => а.order - б.order);`,
     `export const ТЕХНИКА = ${массив(техника)}.sort((а, б) => а.order - б.order);`,
     `export const СИТУАЦИИ = ${массив(ситуации)}.sort((а, б) => а.order - б.order);`,
+    `export const ЧТЕНИЕ = ${массив(чтение)}.sort((а, б) => а.order - б.order);`,
     `export const ОШИБКИ = ${одно('errors')};`,
     `export const ФРАЗЫ = ${одно('phrases')};`,
     `export const СПРАВОЧНИК = ${одно('reference')};`,
     `export const ШПАРГАЛКА = ${одно('cheatsheet')};`,
+    `export const СПРАВОЧНИК_ЧТЕНИЯ = ${одно('lesen-ref')};`,
     `export const ЭКЗАМЕН = ${одно('exam')};`,
     ''
 );
 
 writeFileSync(path.join(ДАННЫЕ, 'index.js'), строки.join('\n'), 'utf8');
 
-console.log(`index.js: грамматика ${грамматика.length}, техника ${техника.length}, ситуации ${ситуации.length}, отдельных файлов ${одиночные.length}`);
+console.log(`index.js: грамматика ${грамматика.length}, техника ${техника.length}, ситуации ${ситуации.length}, чтение ${чтение.length}, отдельных файлов ${одиночные.length}`);

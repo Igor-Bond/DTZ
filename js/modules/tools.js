@@ -7,7 +7,7 @@ import { ui } from '../core/ui.js';
 import { actions } from '../core/actions.js';
 import { app } from '../app.js';
 import {
-    ГРАММАТИКА, ТЕХНИКА, СИТУАЦИИ, ОШИБКИ, ФРАЗЫ, ЭКЗАМЕН,
+    ГРАММАТИКА, ТЕХНИКА, ЧТЕНИЕ, СИТУАЦИИ, ОШИБКИ, ФРАЗЫ, ЭКЗАМЕН,
     разделыШпаргалки, разделШпаргалкиПоId, всеУпражнения
 } from '../data/catalog.js';
 import { ТЕМЫ } from '../data/tags.js';
@@ -352,7 +352,8 @@ export const progress = {
 
     render() {
         const д = хранилище.всё();
-        const модули = [...ГРАММАТИКА, ...ТЕХНИКА];
+        const модули = [...ГРАММАТИКА, ...ТЕХНИКА, ...ЧТЕНИЕ];
+        const пробыЧтения = д.пробыЧтения.slice(-5).reverse();
         const написаны = СИТУАЦИИ.flatMap((с) => с.tasks.map((з) => ({ з, с, п: хранилище.письмо(з.id) }))).filter((х) => х.п.попыток);
         const проб = д.пробы.slice(-5).reverse();
         const темы = Object.entries(д.темы).filter(([, н]) => н.верно + н.ошибок > 0)
@@ -377,6 +378,26 @@ export const progress = {
                             <div class="rowl-end">${п.освоено}/${п.всего}</div>
                         </a>`;
                 })}</div>
+
+                ${ЧТЕНИЕ.length ? ui.html`
+                    <div class="sec">Lesen: наборы заданий</div>
+                    <div class="rows">${ЧТЕНИЕ.map((ч) => {
+                        const результаты = ч.sets.map((с) => ({ с, н: хранилище.набор(с.id) }));
+                        const решено = результаты.filter((х) => х.н.попыток);
+                        const лучшие = решено.length ? Math.round(решено.reduce((а, х) => а + х.н.лучший / (х.н.всего || 1), 0) / решено.length * 100) : null;
+                        return ui.html`
+                            <a class="rowl" href="#/module/${ч.id}" style="color:inherit;text-decoration:none">
+                                <div class="rowl-main">Teil ${ч.teil}: решено ${решено.length} из ${ч.sets.length}</div>
+                                <span class="chip ${лучшие === null ? '' : лучшие >= 75 ? 'ok' : лучшие >= 50 ? 'warn' : 'bad'}">${лучшие === null ? '—' : `${лучшие} %`}</span>
+                            </a>`;
+                    })}</div>` : ''}
+
+                ${пробыЧтения.length ? ui.html`
+                    <div class="sec">Пробы Lesen</div>
+                    <div class="rows">${пробыЧтения.map((п) => ui.html`
+                        <div class="rowl"><div class="rowl-main">${КАК_ДАТА(п.когда)} · вариант ${п.вариант} · ${п.минут} мин</div>
+                            <span class="chip ${п.баллов >= 19 ? 'ok' : п.баллов >= 11 ? 'warn' : 'bad'}">${п.баллов}/${п.из}</span></div>`)}
+                    </div>` : ''}
 
                 ${темы.length ? ui.html`
                     <div class="sec">Темы ошибок</div>

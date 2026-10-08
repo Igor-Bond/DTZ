@@ -21,6 +21,7 @@ await import('./suites/brief.test.js');
 await import('./suites/store.test.js');
 await import('./suites/session.test.js');
 await import('./suites/content.test.js');
+await import('./suites/lesen.test.js');
 await import('./suites/screens.test.js');
 
 const summary = await run(document.getElementById('results'));

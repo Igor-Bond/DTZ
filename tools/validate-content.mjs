@@ -288,8 +288,8 @@ function проверитьApply(a, где, обязательно) {
 }
 
 function проверитьМодуль(м, имя, ид, статистика) {
-    const тип = имя[0];    // g — грамматика, l — техника письма
-    const ожидаемый = имя.match(/^[gl]\d\d/)?.[0];
+    const тип = имя[0];    // g — грамматика, l — техника письма, r — часть Lesen
+    const ожидаемый = имя.match(/^[glr]\d\d/)?.[0];
 
     if (!м || typeof м !== 'object') return ош('модуль', 'default-экспорт не объект');
     if (м.id !== ожидаемый) ош('модуль', `id «${м.id}» не совпадает с именем файла («${ожидаемый}»)`);
@@ -301,8 +301,9 @@ function проверитьМодуль(м, имя, ид, статистика) 
 
     if (!Array.isArray(м.theory)) ош(м.id, 'theory — не массив');
     else {
+        const ждём = тип === 'r' ? 20 : 25;
         if (м.theory.length < 12) ош(м.id, `в теории ${м.theory.length} блоков — слишком мало`);
-        else if (м.theory.length < 25) пр(м.id, `в теории ${м.theory.length} блоков (ожидается 25–45)`);
+        else if (м.theory.length < ждём) пр(м.id, `в теории ${м.theory.length} блоков (ожидается ${ждём}–45)`);
         м.theory.forEach((б, i) => проверитьБлок(б, `${м.id}.theory[${i}]`));
 
         const без = м.theory.filter((б) => б.type === 'trap').length;
@@ -313,7 +314,7 @@ function проверитьМодуль(м, имя, ид, статистика) 
 
     if (Array.isArray(м.exercises)) {
         const н = м.exercises.length;
-        const мин = тип === 'g' ? 36 : 20;
+        const мин = тип === 'g' ? 36 : тип === 'r' ? 16 : 20;
         if (н < мин / 1.5) ош(м.id, `упражнений ${н} — слишком мало`);
         else if (н < мин) пр(м.id, `упражнений ${н} (ожидается ${мин}+)`);
         if (н > 56) пр(м.id, `упражнений ${н} — многовато, сократите`);
@@ -325,6 +326,286 @@ function проверитьМодуль(м, имя, ид, статистика) 
     }
 
     проверитьApply(м.apply, м.id, тип === 'g');
+
+    if (тип === 'r') проверитьЧасть(м, ид);
+}
+
+// ================== LESEN: НАБОРЫ ==================
+
+const ЗАДАНИЙ_В_ЧАСТИ = { 1: 5, 2: 5, 3: 6, 4: 3, 5: 6 };
+const БУКВЫ_ОБЪЯВЛЕНИЙ = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+/** Весь читаемый текст материала одной строкой — в нём ищутся фрагменты-подсказки. */
+function текстМатериала(с) {
+    const куски = [];
+
+    for (const м of с.material || []) {
+        if (м.kind === 'list') for (const р of м.rows || []) куски.push(р.head, р.text);
+        if (м.kind === 'ads') for (const о of м.ads || []) куски.push(о.title || '', о.text || '');
+        if (м.kind === 'text') {
+            куски.push(м.title || '', ...(м.paragraphs || []));
+            for (const р of м.sections || []) куски.push(р.h || '', ...(р.paragraphs || []));
+        }
+        if (м.kind === 'letter') куски.push(...(м.head || []), м.body || '', ...(м.foot || []));
+    }
+
+    return куски.join('\n');
+}
+
+function слов_в(текст) {
+    return сколькоСлов(текст);
+}
+
+function проверитьПункт(п, где, нужноДоказательство, текст) {
+    if (!строка(п.why, 20)) ош(где, 'нет why (минимум 20 знаков)'); else русское(`${где}.why`, п.why);
+
+    if (п.evidence === undefined) { if (нужноДоказательство) ош(где, 'нет evidence'); return; }
+
+    if (typeof п.evidence !== 'string') return ош(где, 'evidence — строка');
+    if (!п.evidence) { if (нужноДоказательство) ош(где, 'evidence пуст'); return; }
+
+    немецкое(`${где}.evidence`, п.evidence);
+    if (!текст.includes(п.evidence)) ош(где, `evidence «${п.evidence.slice(0, 50)}» не найден в материале дословно`);
+}
+
+function проверитьНабор(с, м, ид, статистика) {
+    const где = с && с.id ? с.id : `${м.id}.sets[?]`;
+    const часть = м.teil;
+
+    if (!с || typeof с !== 'object') return ош(где, 'набор не объект');
+    if (!new RegExp(`^${м.id}-s[1-9]$`).test(с.id || '')) ош(где, `id вида ${м.id}-s1`);
+    if (ид.has(с.id)) ош(где, 'повтор id');
+    ид.add(с.id);
+
+    if (!строка(с.title, 5)) ош(где, 'нет title'); else русское(`${где}.title`, с.title, false);
+    if (!строка(с.situation, 15)) ош(где, 'нет situation'); else {
+        немецкое(`${где}.situation`, с.situation);
+        if (слов_в(с.situation) > 40) пр(где, 'situation длиннее 40 слов');
+    }
+
+    if (!Array.isArray(с.glossary) || с.glossary.length < 6 || с.glossary.length > 18) пр(где, 'glossary: от 6 до 18 слов');
+    else с.glossary.forEach((г, i) => {
+        if (!г || !строка(г.de) || !строка(г.ru)) return ош(где, `glossary[${i}]: нужны de и ru`);
+        немецкое(`${где}.glossary[${i}].de`, г.de);
+        русское(`${где}.glossary[${i}].ru`, г.ru);
+    });
+
+    if (!Array.isArray(с.material) || !с.material.length) return ош(где, 'нет material');
+    const текст = текстМатериала(с);
+    немецкое(`${где}.material`, текст.replace(/\n/g, ' '));
+
+    if (!Array.isArray(с.items)) return ош(где, 'items — не массив');
+    if (с.items.length !== ЗАДАНИЙ_В_ЧАСТИ[часть]) ош(где, `вопросов ${с.items.length}, в части ${часть} их ${ЗАДАНИЙ_В_ЧАСТИ[часть]}`);
+
+    с.items.forEach((п, i) => {
+        const ги = п && п.id ? п.id : `${где}[${i}]`;
+        if (!п || typeof п !== 'object') return ош(ги, 'вопрос не объект');
+        if (!new RegExp(`^${с.id}-[1-9]\\d?$`).test(п.id || '')) ош(ги, `id вида ${с.id}-1`);
+        if (ид.has(п.id)) ош(ги, 'повтор id');
+        ид.add(п.id);
+        статистика[`чтение-${часть}`] = (статистика[`чтение-${часть}`] || 0) + 1;
+    });
+
+    switch (часть) {
+        case 1: проверитьЧасть1(с, где, текст); break;
+        case 2: проверитьЧасть2(с, где, текст); break;
+        case 3: проверитьЧасть3(с, где, текст); break;
+        case 4: проверитьЧасть4(с, где, текст); break;
+        case 5: проверитьЧасть5(с, где, текст); break;
+        default: ош(где, `teil должен быть от 1 до 5, а не «${часть}»`);
+    }
+}
+
+function проверитьЧасть1(с, где, текст) {
+    const список = с.material.find((м) => м.kind === 'list');
+    if (!список || с.material.length !== 1) return ош(где, 'Teil 1: один материал kind: list');
+    if (!Array.isArray(список.rows) || список.rows.length < 5 || список.rows.length > 7) ош(где, 'Teil 1: от 5 до 7 рубрик');
+    if (!строка(список.title)) ош(где, 'у списка нет title'); else немецкое(`${где}.title`, список.title);
+
+    const головы = (список.rows || []).map((р) => р.head);
+    (список.rows || []).forEach((р, i) => { if (!р || !строка(р.head) || !строка(р.text)) ош(где, `rows[${i}]: нужны head и text`); });
+
+    let отрицательных = 0;
+
+    for (const п of с.items) {
+        if (!строка(п.q, 8)) ош(п.id, 'нет q'); else немецкое(`${п.id}.q`, п.q);
+        if (!Array.isArray(п.options) || п.options.length !== 3) { ош(п.id, 'options: ровно три'); continue; }
+        п.options.forEach((о) => немецкое(`${п.id}.options`, о));
+
+        if (!головы.includes(п.options[0]) || !головы.includes(п.options[1])) ош(п.id, 'первые два варианта — точно рубрики из списка (head)');
+        if (п.options[0] === п.options[1]) ош(п.id, 'первые два варианта одинаковы');
+        if (!/^andere/i.test(п.options[2])) ош(п.id, 'третий вариант — «andere …»');
+        if (![0, 1, 2].includes(п.answer)) { ош(п.id, 'answer: 0, 1 или 2'); continue; }
+
+        if (п.answer === 2) {
+            // «andere»: нужное лежит в другой рубрике списка (тогда evidence — из её строки)
+            // либо нигде (тогда evidence пуст)
+            отрицательных += 1;
+            проверитьПункт(п, п.id, false, текст);
+
+            if (п.evidence) {
+                const строкаДоказательства = (список.rows || []).find((р) => `${р.head} ${р.text}`.includes(п.evidence));
+                if (строкаДоказательства && (строкаДоказательства.head === п.options[0] || строкаДоказательства.head === п.options[1])) {
+                    ош(п.id, 'при «andere» evidence не может лежать в рубрике a или b');
+                }
+            }
+        } else {
+            // Доказательство должно лежать именно в строке выбранной рубрики
+            const строка_ = (список.rows || []).find((р) => р.head === п.options[п.answer]);
+            проверитьПункт(п, п.id, true, текст);
+            if (строка_ && п.evidence && !строка_.text.includes(п.evidence) && !строка_.head.includes(п.evidence)) ош(п.id, 'evidence не лежит в строке выбранной рубрики');
+        }
+    }
+
+    if (отрицательных > 2) пр(где, `«andere» верно в ${отрицательных} вопросах из 5 (желательно 1–2)`);
+    if (!отрицательных) пр(где, 'нет вопроса с ответом «andere …»: в экзамене такой почти всегда есть');
+}
+
+function проверитьЧасть2(с, где, текст) {
+    const реклама = с.material.find((м) => м.kind === 'ads');
+    if (!реклама || с.material.length !== 1) return ош(где, 'Teil 2: один материал kind: ads');
+    if (!Array.isArray(реклама.ads) || реклама.ads.length !== 8) return ош(где, 'Teil 2: ровно 8 объявлений a–h');
+
+    реклама.ads.forEach((о, i) => {
+        if (о.letter !== БУКВЫ_ОБЪЯВЛЕНИЙ[i]) ош(где, `объявление ${i + 1}: letter «${о.letter}», ожидается «${БУКВЫ_ОБЪЯВЛЕНИЙ[i]}»`);
+        if (!строка(о.text, 20)) ош(где, `объявление ${о.letter}: нет text`);
+        else if (слов_в(`${о.title || ''} ${о.text}`) > 60) пр(где, `объявление ${о.letter} длиннее 60 слов`);
+    });
+
+    const ответы = [];
+
+    for (const п of с.items) {
+        if (!строка(п.q, 20)) ош(п.id, 'нет q'); else немецкое(`${п.id}.q`, п.q);
+        if (!['x', ...БУКВЫ_ОБЪЯВЛЕНИЙ].includes(п.answer)) { ош(п.id, 'answer: буква a–h или «x»'); continue; }
+        ответы.push(п.answer);
+
+        if (п.answer === 'x') {
+            if (п.evidence) ош(п.id, 'при «x» evidence пуст');
+            проверитьПункт(п, п.id, false, текст);
+        } else {
+            const о = реклама.ads.find((а) => а.letter === п.answer);
+            проверитьПункт(п, п.id, true, текст);
+            if (о && п.evidence && !`${о.title || ''}\n${о.text}`.includes(п.evidence)) ош(п.id, `evidence не лежит в объявлении ${п.answer}`);
+        }
+    }
+
+    if (ответы.filter((а) => а === 'x').length !== 1) ош(где, 'ровно один ответ «x»');
+    const буквы = ответы.filter((а) => а !== 'x');
+    if (new Set(буквы).size !== буквы.length) ош(где, 'две ситуации ведут к одному объявлению');
+}
+
+function проверитьЧасть3(с, где, текст) {
+    const тексты = с.material.filter((м) => м.kind === 'text');
+    if (тексты.length !== 3 || с.material.length !== 3) return ош(где, 'Teil 3: три материала kind: text');
+
+    тексты.forEach((т) => {
+        if (!строка(т.id)) ош(где, 'у текста нет id (t1, t2, t3)');
+        const н = слов_в([т.title, ...(т.paragraphs || [])].join(' '));
+        if (н < 50 || н > 150) пр(где, `текст ${т.id}: ${н} слов (ожидается 55–130)`);
+    });
+
+    const ожидаемыйПорядок = ['t1:rf', 't1:mc', 't2:rf', 't2:mc', 't3:rf', 't3:mc'];
+    const порядок = с.items.map((п) => `${п.text}:${п.type}`);
+    if (порядок.join() !== ожидаемыйПорядок.join()) ош(где, `порядок вопросов: ${порядок.join(' ')} — нужен ${ожидаемыйПорядок.join(' ')}`);
+
+    let верных = 0;
+
+    for (const п of с.items) {
+        if (!строка(п.q, 8)) ош(п.id, 'нет q'); else немецкое(`${п.id}.q`, п.q);
+
+        if (п.type === 'rf') {
+            if (typeof п.answer !== 'boolean') ош(п.id, 'rf: answer — true или false');
+            else if (п.answer) верных += 1;
+        } else if (п.type === 'mc') {
+            if (!Array.isArray(п.options) || п.options.length !== 3) ош(п.id, 'mc: ровно три варианта');
+            else {
+                п.options.forEach((о) => немецкое(`${п.id}.options`, о));
+                if (![0, 1, 2].includes(п.answer)) ош(п.id, 'mc: answer 0, 1 или 2');
+                const длины = п.options.map((о) => о.length);
+                if (Math.max(...длины) > 2.2 * Math.min(...длины) + 10) пр(п.id, 'варианты сильно различаются по длине: верный угадывается');
+            }
+        } else ош(п.id, 'type: rf или mc');
+
+        проверитьПункт(п, п.id, true, текст);
+    }
+
+    if (верных === 0 || верных === 3) пр(где, 'в трёх утверждениях rf нужны и richtig, и falsch');
+}
+
+function проверитьЧасть4(с, где, текст) {
+    const т = с.material.find((м) => м.kind === 'text');
+    if (!т || с.material.length !== 1) return ош(где, 'Teil 4: один материал kind: text');
+
+    const н = слов_в(текст);
+    if (н < 170 || н > 340) пр(где, `текст ${н} слов (ожидается 190–300)`);
+
+    let верных = 0;
+    let последняяПозиция = -1;
+
+    for (const п of с.items) {
+        if (п.type !== 'rf') ош(п.id, 'Teil 4: только rf');
+        if (!строка(п.q, 10)) ош(п.id, 'нет q'); else немецкое(`${п.id}.q`, п.q);
+        if (typeof п.answer !== 'boolean') ош(п.id, 'answer — true или false'); else if (п.answer) верных += 1;
+        проверитьПункт(п, п.id, true, текст);
+
+        // Утверждения идут в порядке расположения доказательств в тексте
+        const позиция = п.evidence ? текст.indexOf(п.evidence) : -1;
+        if (позиция >= 0) {
+            if (позиция < последняяПозиция) пр(п.id, 'утверждения идут не в порядке расположения в тексте');
+            последняяПозиция = позиция;
+        }
+    }
+
+    if (верных === 0 || верных === 3) пр(где, 'в трёх утверждениях нужны и richtig, и falsch');
+}
+
+function проверитьЧасть5(с, где, текст) {
+    const п = с.material.find((м) => м.kind === 'letter');
+    if (!п || с.material.length !== 1) return ош(где, 'Teil 5: один материал kind: letter');
+    if (!строка(п.body, 150)) return ош(где, 'у письма нет body');
+
+    for (let н = 0; н <= 6; н++) {
+        const найдено = п.body.split(`[${н}]`).length - 1;
+        if (найдено !== 1) ош(где, `пропуск [${н}] встречается ${найдено} раз (нужно один)`);
+    }
+
+    const порядок = [...п.body.matchAll(/\[(\d)\]/g)].map((м) => Number(м[1]));
+    if (порядок.join() !== '0,1,2,3,4,5,6') ош(где, `пропуски идут в порядке ${порядок.join(' ')}, нужен 0 1 2 3 4 5 6`);
+
+    const н = слов_в(п.body.replace(/\[\d\]/g, ''));
+    if (н < 70 || н > 190) пр(где, `в письме ${н} слов (ожидается 90–170)`);
+
+    if (!с.example || !Array.isArray(с.example.options) || с.example.options.length !== 3 || ![0, 1, 2].includes(с.example.answer)) ош(где, 'example: три варианта и answer 0–2');
+    else с.example.options.forEach((о) => немецкое(`${где}.example`, о));
+
+    const занято = new Set();
+
+    for (const в of с.items) {
+        if (!Number.isInteger(в.gap) || в.gap < 1 || в.gap > 6) { ош(в.id, 'gap: от 1 до 6'); continue; }
+        if (занято.has(в.gap)) ош(в.id, `пропуск ${в.gap} уже есть`);
+        занято.add(в.gap);
+
+        if (!Array.isArray(в.options) || в.options.length !== 3) { ош(в.id, 'options: ровно три'); continue; }
+        в.options.forEach((о) => немецкое(`${в.id}.options`, о));
+        if (new Set(в.options).size !== 3) ош(в.id, 'одинаковые варианты');
+        if (![0, 1, 2].includes(в.answer)) ош(в.id, 'answer: 0, 1 или 2');
+        проверитьПункт(в, в.id, false, текст);
+    }
+
+    if (занято.size !== 6) ош(где, 'нужны пропуски 1–6, по одному вопросу на каждый');
+}
+
+function проверитьЧасть(м, ид) {
+    if (![1, 2, 3, 4, 5].includes(м.teil)) ош(м.id, 'teil: от 1 до 5');
+    if (Number(м.id.slice(1)) !== м.teil) ош(м.id, `id «${м.id}» не соответствует части ${м.teil}`);
+    if (!Array.isArray(м.sets) || м.sets.length !== 6) return ош(м.id, 'sets: ровно шесть наборов');
+
+    const статистика = {};
+    м.sets.forEach((с) => проверитьНабор(с, м, ид, статистика));
+
+    // Темы и ситуации наборов не повторяются
+    const названия = м.sets.map((с) => с && с.title);
+    if (new Set(названия).size !== названия.length) пр(м.id, 'одинаковые названия наборов');
 }
 
 function проверитьСитуацию(с, имя, ид, статистика) {
@@ -501,12 +782,12 @@ function проверитьСправочник(разделы, ид) {
 
 function всеФайлы() {
     const список = [];
-    for (const подкаталог of ['grammar', 'letters']) {
+    for (const подкаталог of ['grammar', 'letters', 'lesen']) {
         const п = path.join(ДАННЫЕ, подкаталог);
         if (!existsSync(п)) continue;
         for (const ф of readdirSync(п).sort()) if (ф.endsWith('.js')) список.push(path.join(п, ф));
     }
-    for (const ф of ['errors.js', 'phrases.js', 'reference.js', 'cheatsheet.js', 'exam.js']) {
+    for (const ф of ['errors.js', 'phrases.js', 'reference.js', 'cheatsheet.js', 'lesen-ref.js', 'exam.js']) {
         const п = path.join(ДАННЫЕ, ф);
         if (existsSync(п)) список.push(п);
     }
@@ -536,11 +817,11 @@ for (const полный of файлы) {
 
     проверено++;
 
-    if (/^[gl]\d\d/.test(имя)) проверитьМодуль(модуль, имя, ид, статистика);
+    if (/^[glr]\d\d/.test(имя)) проверитьМодуль(модуль, имя, ид, статистика);
     else if (/^s\d\d/.test(имя)) проверитьСитуацию(модуль, имя, ид, статистика);
     else if (имя === 'errors.js') проверитьОшибки(модуль, ид, статистика);
     else if (имя === 'phrases.js') проверитьФразы(модуль, ид);
-    else if (имя === 'reference.js' || имя === 'cheatsheet.js' || имя === 'exam.js') проверитьСправочник(модуль, ид);
+    else if (['reference.js', 'cheatsheet.js', 'lesen-ref.js', 'exam.js'].includes(имя)) проверитьСправочник(модуль, ид);
     else ош('файл', `не знаю, как проверять «${имя}»`);
 }
 

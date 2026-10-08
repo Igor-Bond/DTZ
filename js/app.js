@@ -14,6 +14,7 @@ import { home } from './modules/home.js';
 import { moduleScreen, theory, mini } from './modules/module.js';
 import { drill, result } from './modules/drill.js';
 import { letters, situation, write, exam } from './modules/letters.js';
+import { lesen, read, lesenexam } from './modules/lesen.js';
 import { review, errors, phrases, cards, cheat, about, progress, more } from './modules/tools.js';
 
 /**
@@ -31,6 +32,7 @@ function экраны() {
         ЭКРАНЫ = {
             home, module: moduleScreen, theory, mini, drill, result,
             letters, situation, write, exam,
+            lesen, read, lesenexam,
             review, errors, phrases, cards, cheat, about, progress, more
         };
     }

@@ -3,7 +3,7 @@
  */
 
 import { ui } from '../core/ui.js';
-import { ГРАММАТИКА, ТЕХНИКА, ШПАРГАЛКА, СПРАВОЧНИК } from '../data/catalog.js';
+import { ГРАММАТИКА, ТЕХНИКА, ЧТЕНИЕ, ШПАРГАЛКА, СПРАВОЧНИК, СПРАВОЧНИК_ЧТЕНИЯ } from '../data/catalog.js';
 import { хранилище } from '../core/store.js';
 import { прогрессМодуля, порядокМодулей, следующийШаг, сводкаПисем } from '../core/progress.js';
 import { страница } from './shell.js';
@@ -15,7 +15,7 @@ function плитка(м, рекомендован) {
 
     return ui.html`
         <a class="tile ${класс}" href="#/module/${м.id}">
-            <span class="tile-num">${м.id.startsWith('g') ? `МОДУЛЬ ${м.order}` : 'ТЕХНИКА'}</span>
+            <span class="tile-num">${м.id.startsWith('g') ? `МОДУЛЬ ${м.order}` : м.id.startsWith('r') ? `LESEN · TEIL ${м.teil}` : 'ТЕХНИКА'}</span>
             <span class="tile-title">${м.short || м.title}</span>
             <span class="tile-foot">
                 ${рекомендован && !п.начат ? ui.html`<span class="tile-flag">Начать здесь</span>` : ''}
@@ -81,9 +81,20 @@ export const home = {
                     </a>
                 </div>
 
+                ${ЧТЕНИЕ.length ? ui.html`
+                    <div class="sec">Чтение (Lesen)</div>
+                    <div class="tiles">
+                        ${ЧТЕНИЕ.map((м) => плитка(м, false))}
+                        <a class="tile" href="#/lesen">
+                            <span class="tile-num">ПРОБА</span>
+                            <span class="tile-title">Lesen: 25 заданий, 45 минут</span>
+                            <span class="tile-foot"><span class="tile-flag">Как на экзамене</span></span>
+                        </a>
+                    </div>` : ''}
+
                 <div class="sec">Инструменты</div>
                 <div class="links">
-                    <a class="link" href="#/cheat"><span class="link-ico">☰</span><span class="link-main"><span class="link-title">Шпаргалка</span><br><span class="link-sub">${ШПАРГАЛКА.length + СПРАВОЧНИК.length} страниц: схемы, союзы, конструкции с переводами, таблицы</span></span><span class="link-end">›</span></a>
+                    <a class="link" href="#/cheat"><span class="link-ico">☰</span><span class="link-main"><span class="link-title">Шпаргалка</span><br><span class="link-sub">${ШПАРГАЛКА.length + СПРАВОЧНИК.length + СПРАВОЧНИК_ЧТЕНИЯ.length} страниц: схемы, союзы, конструкции, таблицы, слова для чтения</span></span><span class="link-end">›</span></a>
                     <a class="link" href="#/phrases"><span class="link-ico">❝</span><span class="link-main"><span class="link-title">Фразы для письма</span><br><span class="link-sub">Готовые заготовки с переводом и карточки</span></span><span class="link-end">›</span></a>
                     <a class="link" href="#/errors"><span class="link-ico">✚</span><span class="link-main"><span class="link-title">Клиника ошибок</span><br><span class="link-sub">Типичные ошибки русскоговорящих и как их лечить</span></span><span class="link-end">›</span></a>
                     <a class="link" href="#/exam"><span class="link-ico">⏱</span><span class="link-main"><span class="link-title">Проба экзамена</span><br><span class="link-sub">30 минут, два задания на выбор</span></span><span class="link-end">›</span></a>
