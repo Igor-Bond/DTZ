@@ -1,0 +1,19 @@
+{
+  "name": "DTZ B1 · Письмо",
+  "short_name": "DTZ B1",
+  "description": "Курс немецкого для письменной части экзамена DTZ: грамматика, шпаргалка, письма с проверкой",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f2ea",
+  "theme_color": "#f5f2ea",
+  "lang": "ru",
+  "categories": ["education"],
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
