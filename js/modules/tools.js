@@ -15,6 +15,7 @@ import { хранилище, ПОСЛЕДНИЙ_ЯЩИК } from '../core/store.j
 import { прогрессМодуля } from '../core/progress.js';
 import { разметка } from '../core/markup.js';
 import { страница, сообщить } from './shell.js';
+import { разделУстановки } from './install.js';
 import { блоки, текстБлоков } from './blocks.js';
 import { НАЗВАНИЕ, ВЕРСИЯ } from '../version.js';
 
@@ -485,6 +486,7 @@ export const more = {
                     <a class="link" href="#/about"><span class="link-ico">ⓘ</span><span class="link-main"><span class="link-title">Об экзамене</span><br><span class="link-sub">Задание, критерии, баллы</span></span><span class="link-end">›</span></a>
                     <a class="link" href="#/drill/test"><span class="link-ico">✓</span><span class="link-main"><span class="link-title">Входной тест</span><br><span class="link-sub">Пройти ещё раз и обновить маршрут</span></span><span class="link-end">›</span></a>
                 </div>
+                ${разделУстановки()}
                 <p class="muted small" style="margin:18px 2px">${НАЗВАНИЕ} · версия ${ВЕРСИЯ}. Материалы написаны по описанию экзамена из официального руководства и учебных тестов; перед экзаменом сверьтесь с тестом вашего курсового центра.</p>`
         });
     }

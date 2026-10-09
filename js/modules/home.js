@@ -7,6 +7,7 @@ import { ГРАММАТИКА, ТЕХНИКА, ЧТЕНИЕ, ШПАРГАЛКА,
 import { хранилище } from '../core/store.js';
 import { прогрессМодуля, порядокМодулей, следующийШаг, сводкаПисем } from '../core/progress.js';
 import { страница } from './shell.js';
+import { кнопкаУстановки } from './install.js';
 import { НАЗВАНИЕ } from '../version.js';
 
 function плитка(м, рекомендован) {
@@ -48,6 +49,7 @@ export const home = {
                 <div class="hero">
                     <h1>${НАЗВАНИЕ}</h1>
                     <p>Письменная часть экзамена Deutsch-Test für Zuwanderer: четыре пункта, обращение и прощание, грамматика без ошибок.</p>
+                    ${кнопкаУстановки()}
                 </div>
 
                 ${пусто ? ui.html`<div class="card">Содержимое курса ещё не подключено.</div>` : ''}

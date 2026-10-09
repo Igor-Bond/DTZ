@@ -286,6 +286,7 @@ a { color: var(--accent); }
 .hero { padding: 18px 2px 4px; }
 .hero h1 { font-size: 26px; letter-spacing: -0.01em; }
 .hero p { margin-top: 6px; color: var(--ink-2); }
+.install-btn { margin-top: 12px; }
 
 .muted { color: var(--muted); }
 .small { font-size: 13.5px; }

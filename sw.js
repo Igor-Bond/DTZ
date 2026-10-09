@@ -16,7 +16,7 @@
  * приложений останется старый кэш.
  */
 
-const APP_VERSION = 'v2';
+const APP_VERSION = 'v3';
 const CACHE_NAME = `briefe-${APP_VERSION}`;
 
 const СРОК_СЕТИ = 3000;
@@ -36,6 +36,7 @@ const ФАЙЛЫ = [
     'js/core/brief.js',
     'js/core/check.js',
     'js/core/exercise.js',
+    'js/core/install.js',
     'js/core/lesen.js',
     'js/core/markup.js',
     'js/core/progress.js',
@@ -87,6 +88,7 @@ const ФАЙЛЫ = [
     'js/modules/drill.js',
     'js/modules/home.js',
     'js/modules/input.js',
+    'js/modules/install.js',
     'js/modules/lesen.js',
     'js/modules/letters.js',
     'js/modules/module.js',

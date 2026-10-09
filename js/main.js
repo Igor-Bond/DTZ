@@ -8,6 +8,7 @@
 
 import { app } from './app.js';
 import { actions } from './core/actions.js';
+import { установка } from './core/install.js';
 
 /**
  * Упавшее действие обязано быть видно: молча съеденная ошибка выглядит как
@@ -35,6 +36,13 @@ function зарегистрироватьВоркер() {
     navigator.serviceWorker.register('sw.js')
         .catch((e) => console.error('[PWA] Не удалось зарегистрировать сервис-воркер:', e));
 }
+
+// Событие установки Chrome шлёт один раз и в любой момент после загрузки —
+// ловить его надо до первой отрисовки, иначе кнопка «Установить» не появится
+установка.init();
+установка.наИзменение(() => {
+    if (['home', 'more'].includes(app.route.name)) app.render(true);
+});
 
 actions.init();
 app.init();
