@@ -16,7 +16,7 @@
  * приложений останется старый кэш.
  */
 
-const APP_VERSION = 'v3';
+const APP_VERSION = 'v4';
 const CACHE_NAME = `briefe-${APP_VERSION}`;
 
 const СРОК_СЕТИ = 3000;

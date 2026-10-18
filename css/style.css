@@ -539,10 +539,14 @@ td .de { white-space: normal; }
 .answer-line, .answer-area { display: block; width: 100%; margin-top: 14px; padding: 10px 12px; }
 .answer-area { min-height: 92px; resize: vertical; line-height: 1.45; }
 
-.umlauts { display: flex; gap: 6px; margin-top: 10px; }
+/* Ряд обязан помещаться в карточку любой ширины: кнопки сжимаются, а на
+   совсем узком экране переносятся на вторую строку, а не выходят за край */
+.umlauts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; max-width: 100%; }
 
 .key {
-    min-width: 42px;
+    flex: 1 1 34px;
+    min-width: 0;
+    max-width: 52px;
     min-height: 38px;
     border: 1px solid var(--line);
     border-radius: 8px;

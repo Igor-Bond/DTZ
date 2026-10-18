@@ -78,6 +78,66 @@ for (const э of экраны) {
     if (сломан) провал(`экран #/${э}`, 'не нарисовался');
 }
 
+// ---------------- 1б. узкий экран: ничего не выходит за край ----------------
+
+/*
+ * Ряд кнопок ä ö ü ß из семи штук по 42 точки шире карточки на телефоне и
+ * вылезал за границу приложения. Тесты в браузере стилей не грузят, поэтому
+ * ширина проверяется здесь: самый узкий телефон, ряд включён, на каждом экране
+ * с полем ввода кнопки лежат внутри ряда, ряд — внутри окна, страница не
+ * шире окна.
+ */
+{
+    const узкий = await (await браузер.newContext({ viewport: { width: 320, height: 640 }, serviceWorkers: 'block' })).newPage();
+    await узкий.addInitScript(() => localStorage.setItem('briefe.v1.prefs', JSON.stringify({ умлауты: true })));
+    узкий.on('dialog', (д) => д.accept());
+
+    const маршруты = [
+        `drill/all:${данные.ГРАММАТИКА[0].id}`,
+        `drill/all:${данные.ГРАММАТИКА[1].id}`,
+        `drill/all:${данные.ТЕХНИКА[0].id}`,
+        `module/${данные.ГРАММАТИКА[0].id}`,
+        `write/${данные.СИТУАЦИИ[0].tasks[0].id}`,
+        'more', '', 'lesen', 'cheat', 'letters'
+    ];
+
+    let рядовВиделИ = 0;
+
+    for (const м of маршруты) {
+        await узкий.goto(`${АДРЕС}#/${м}`, { waitUntil: 'domcontentloaded' });
+        await узкий.reload({ waitUntil: 'domcontentloaded' });
+        await узкий.waitForSelector('#screen .page, #screen .empty-note', { timeout: 8000 });
+
+        const вылезло = await узкий.evaluate(() => {
+            const ширина = document.documentElement.clientWidth;
+            const плохо = [];
+            const ряд = document.querySelector('.umlauts');
+
+            if (ряд) {
+                const р = ряд.getBoundingClientRect();
+                if (р.right > ширина + 0.5 || р.left < -0.5) плохо.push(`ряд умлаутов шире окна (${Math.round(р.right)} > ${ширина})`);
+
+                for (const к of ряд.querySelectorAll('.key')) {
+                    const б = к.getBoundingClientRect();
+                    if (б.right > р.right + 0.5 || б.left < р.left - 0.5) плохо.push(`кнопка «${к.textContent}» вне ряда`);
+                    if (б.width < 24 || б.height < 32) плохо.push(`кнопка «${к.textContent}» слишком мала: ${Math.round(б.width)}×${Math.round(б.height)}`);
+                }
+            }
+
+            if (document.documentElement.scrollWidth > ширина + 1) плохо.push(`страница шире окна: ${document.documentElement.scrollWidth} > ${ширина}`);
+
+            return { плохо, ряд: !!ряд };
+        });
+
+        if (вылезло.ряд) рядовВиделИ += 1;
+        for (const п of вылезло.плохо) провал(`узкий экран #/${м}`, п);
+    }
+
+    if (!рядовВиделИ) провал('узкий экран', 'ряд умлаутов не нашёлся ни на одном экране: проверка ничего не проверила');
+
+    await узкий.context().close();
+}
+
 await открыть('');
 await снимок('главная');
 await открыть('theory/g01');

@@ -471,6 +471,23 @@ actions.on('сбросить-всё', () => {
 
 // ================== ЕЩЁ ==================
 
+/** Нужен ли ряд кнопок ä ö ü ß под полями ввода: зависит от клавиатуры в руках (Р-18). */
+function разделУмлаутов() {
+    const включены = хранилище.настройка('умлауты');
+
+    return ui.html`
+        <div class="card" style="margin-top:18px">
+            <h2>Кнопки ä ö ü ß</h2>
+            <p class="lead">Ряд кнопок под полем ввода. На немецкой раскладке клавиатуры они не нужны, на русской — выручают.</p>
+            <button class="btn soft small" style="margin-top:10px" data-action="умлауты-переключить">${включены ? 'Скрыть кнопки' : 'Показывать кнопки'}</button>
+        </div>`;
+}
+
+actions.on('умлауты-переключить', () => {
+    хранилище.задатьНастройку('умлауты', !хранилище.настройка('умлауты'));
+    app.render(true);
+});
+
 export const more = {
 
     render() {
@@ -486,6 +503,7 @@ export const more = {
                     <a class="link" href="#/about"><span class="link-ico">ⓘ</span><span class="link-main"><span class="link-title">Об экзамене</span><br><span class="link-sub">Задание, критерии, баллы</span></span><span class="link-end">›</span></a>
                     <a class="link" href="#/drill/test"><span class="link-ico">✓</span><span class="link-main"><span class="link-title">Входной тест</span><br><span class="link-sub">Пройти ещё раз и обновить маршрут</span></span><span class="link-end">›</span></a>
                 </div>
+                ${разделУмлаутов()}
                 ${разделУстановки()}
                 <p class="muted small" style="margin:18px 2px">${НАЗВАНИЕ} · версия ${ВЕРСИЯ}. Материалы написаны по описанию экзамена из официального руководства и учебных тестов; перед экзаменом сверьтесь с тестом вашего курсового центра.</p>`
         });
