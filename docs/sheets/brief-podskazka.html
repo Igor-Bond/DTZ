@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Официальное письмо B1 — подсказка</title>
+<!--
+  Подсказка на пять листов A4: электронное письмо (Sie) уровня B1 — схема и пример,
+  фразы по частям, готовые предложения по темам и два листа глаголов. Это отдельный документ, не часть приложения.
+  PDF собирается так:
+    node tools/make-sheet.mjs docs/sheets/brief-podskazka.html dist/brief-podskazka-B1.pdf 5
+-->
+<style>
+    @page { size: A4; margin: 8mm 10mm; }
+
+    * { box-sizing: border-box; }
+
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    body {
+        margin: 0;
+        font: 9pt/1.34 "Segoe UI", Arial, sans-serif;
+        color: #1b2233;
+        background: #fff;
+    }
+
+    .page { width: 190mm; margin: 0 auto; break-after: page; }
+    .page:last-child { break-after: auto; }
+
+    .de { font-family: "Sitka Text", Charter, Georgia, Cambria, serif; font-size: 9.6pt; color: #13203f; }
+    .ru { color: #66708a; font-size: 8pt; }
+
+    h1 { margin: 0; font-size: 16pt; letter-spacing: -0.01em; }
+    h2 { margin: 3.4mm 0 1.6mm; font-size: 9.6pt; color: #2f4fd0; text-transform: uppercase; letter-spacing: 0.05em; }
+    .sub { margin: 0.8mm 0 3mm; color: #5b6478; font-size: 8.6pt; }
+
+    /* ---------- макет письма ---------- */
+    .letter { border: 0.8pt solid #b9c1d6; border-radius: 2mm; padding: 1.2mm 3.4mm; background: #fbfcff; }
+    .lr {
+        display: grid;
+        grid-template-columns: 26mm 1fr;
+        gap: 3mm;
+        padding: 1.05mm 0;
+        border-bottom: 0.4pt dashed #d3d9e8;
+    }
+    .lr:last-child { border-bottom: 0; }
+    .lab { padding-top: 0.5mm; font-size: 7pt; font-weight: 700; line-height: 1.2; color: #2f4fd0; text-transform: uppercase; letter-spacing: 0.04em; }
+    .lab small { display: block; font-weight: 400; text-transform: none; letter-spacing: 0; color: #66708a; }
+    .lr .de { line-height: 1.38; }
+    .lr .right { text-align: right; }
+    .lr p { margin: 0 0 0.8mm; }
+    .lr p:last-child { margin: 0; }
+    .letter.small .lr { padding: 0.8mm 0; }
+    .letter.small .de { font-size: 9.2pt; }
+
+    /* ---------- электронное письмо ---------- */
+    .mail { border: 0.8pt solid #b9c1d6; border-radius: 2mm; background: #fbfcff; overflow: hidden; }
+    .mh { display: grid; grid-template-columns: 17mm 1fr; padding: 0.7mm 3.4mm; background: #eef2ff; border-bottom: 0.4pt solid #d3d9e8; }
+    .mh b { color: #2f4fd0; font-size: 8.6pt; }
+    .mh .de { font-size: 9.2pt; }
+    .mb { padding: 1.6mm 3.4mm 0.6mm; font-size: 9.2pt; line-height: 1.36; }
+    .mb p { margin: 0 0 1.1mm; }
+    .mnote { margin: 0; padding: 1.2mm 3.4mm 1.4mm; border-top: 0.4pt dashed #d3d9e8; }
+
+    /* ---------- обращение и тема ---------- */
+    .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+    .box { border: 0.6pt solid #d3d9e8; border-radius: 1.6mm; padding: 1.6mm 2.6mm 1.8mm; break-inside: avoid; }
+    .box h3 { margin: 0 0 1mm; font-size: 8.8pt; color: #2f4fd0; }
+    .box ul { margin: 0; padding: 0; list-style: none; }
+    .box li { margin: 0 0 0.9mm; line-height: 1.3; }
+    .note { margin: 1.1mm 0 0; color: #66708a; font-size: 7.8pt; line-height: 1.28; }
+
+    /* ---------- банки фраз ---------- */
+    .banks { display: grid; grid-template-columns: 1fr 1fr; gap: 2.6mm 5mm; }
+    .bank { break-inside: avoid; border-left: 2.4pt solid #2f4fd0; padding-left: 2.6mm; }
+    .bank h3 { margin: 0 0 0.9mm; font-size: 9.2pt; color: #2f4fd0; }
+    .bank h3 small { font-weight: 400; color: #66708a; }
+    .bank ul { margin: 0; padding: 0; list-style: none; }
+    .bank li { margin: 0 0 0.55mm; line-height: 1.26; }
+    .bank li .de { font-size: 9pt; }
+    .topics { columns: 2; column-gap: 5mm; }
+    .topics .bank { margin: 0 0 1.7mm; }
+    .topics .bank li { margin: 0 0 0.35mm; line-height: 1.22; }
+    .topics .bank li .de { font-size: 8.6pt; }
+    .topics .bank li .ru { font-size: 7.6pt; }
+
+    /* ---------- памятка ---------- */
+    .rules { margin-top: 3.2mm; padding: 2mm 3mm; border-radius: 1.6mm; background: #eef2ff; color: #1b2233; font-size: 8.4pt; line-height: 1.34; }
+    .rules b { color: #2f4fd0; }
+    .rules ul { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 6mm; }
+    .rules li { margin: 0 0 1mm; break-inside: avoid; }
+
+    /* ---------- глаголы ---------- */
+    .vg { margin: 0 0 2.4mm; }
+    .vg h3 { margin: 0 0 0.6mm; padding-bottom: 0.7mm; border-bottom: 1.1pt solid #2f4fd0; font-size: 9.6pt; color: #2f4fd0; break-after: avoid; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    tr { break-inside: avoid; }
+    td, td .de { line-height: 1.16; }
+    td { padding: 0.45mm 0; vertical-align: top; border-bottom: 0.3pt solid #e6e9f2; }
+    tr:last-child td { border-bottom: 0; }
+    td.v { width: 24%; padding-right: 1.2mm; }
+    td.p { width: 17%; padding-right: 1.2mm; }
+    td.t { width: 20%; padding-right: 1.2mm; font-size: 7.9pt; line-height: 1.2; }
+    td.e { width: 39%; }
+    td.v .de { font-size: 9pt; font-weight: 600; }
+    td.p .de { font-size: 8.3pt; font-weight: 400; color: #4a5470; }
+    td.e .de { font-size: 8.1pt; font-weight: 400; color: #2a3a63; }
+    .case { margin-left: 1.2mm; color: #66708a; font-weight: 400; font-size: 7.4pt; white-space: nowrap; }
+    thead td { padding: 0 0 0.5mm; border: 0; color: #66708a; font-size: 7pt; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ---------- пример письма: число слов справа ---------- */
+    .letter.w .lr { grid-template-columns: 26mm 1fr 9mm; padding: 0.55mm 0; }
+    .letter.w .de { font-size: 8.9pt; line-height: 1.3; }
+    .letter.w .lab { font-size: 6.6pt; }
+    .cnt { padding-top: 0.4mm; text-align: right; font-size: 8.6pt; font-weight: 700; color: #2f4fd0; }
+    .lr.tot { border-top: 0.8pt solid #b9c1d6; border-bottom: 0; }
+    .lr.tot .ru { padding-top: 0.5mm; font-size: 7.8pt; }
+    .pnote { margin: 1mm 0 0; }
+
+    /* ---------- схема ---------- */
+    .plan { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .plan th { padding: 0 1.5mm 0.8mm 0; text-align: left; font-size: 7pt; font-weight: 700; color: #66708a; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1pt solid #2f4fd0; }
+    .plan th:nth-child(1), .plan td.part { width: 31mm; }
+    .plan th:nth-child(2), .plan td.n { width: 13mm; text-align: center; }
+    .plan td { padding: 0.7mm 1.5mm 0.7mm 0; vertical-align: top; border-bottom: 0.4pt dashed #d3d9e8; }
+    .plan td.part { font-size: 8.4pt; font-weight: 700; color: #2f4fd0; line-height: 1.2; }
+    .plan td.part small { display: block; font-weight: 400; color: #66708a; font-size: 7.2pt; }
+    .plan td.n { font-size: 8.4pt; color: #4a5470; }
+    .plan td.f { font-size: 8.2pt; line-height: 1.25; }
+    .plan tr:last-child td { border-bottom: 0; }
+
+    /* ---------- советы ---------- */
+    .tips { margin: 0; padding: 0; list-style: none; counter-reset: t; columns: 2; column-gap: 6mm; }
+    .tips li { counter-increment: t; break-inside: avoid; margin: 0 0 1.2mm; padding-left: 5.2mm; position: relative; font-size: 8pt; line-height: 1.28; }
+    .tips li::before { content: counter(t); position: absolute; left: 0; top: 0.1mm; width: 3.8mm; height: 3.8mm; border-radius: 50%; background: #2f4fd0; color: #fff; font-size: 7pt; font-weight: 700; text-align: center; line-height: 3.8mm; }
+    .tips b { color: #1b2233; }
+</style>
+</head>
+<body>
+
+<!-- ======================= ЛИСТ 1: готовое электронное письмо на ~80 слов и схема ======================= -->
+<section class="page">
+    <h1>Электронное письмо на ~80 слов: пример и схема</h1>
+    <p class="sub">Формальное письмо на <b>Sie</b>. Слева — часть письма, справа — число слов. Точного объёма в официальных материалах нет («möglichst viel»): 70–110 слов — спокойно, около 80 — ориентир.</p>
+
+    <h2>Готовое письмо</h2>
+    <div class="letter w">
+        <div class="lr"><div class="lab">от кого<small>Von:</small></div><div class="de">i.petrow@mail.de</div><div></div></div>
+        <div class="lr"><div class="lab">кому<small>An:</small></div><div class="de">k.weber@vhs-kassel.de</div><div></div></div>
+        <div class="lr"><div class="lab">тема<small>Betreff:</small></div><div class="de"><b>Fehlen im Deutschkurs B1 (diese Woche)</b> <span class="ru">— что именно + срок или номер, без точки</span></div><div></div></div>
+        <div class="lr"><div class="lab">копия · вложение<small>Cc: · Anhang:</small></div><div class="de">— <span class="ru">(если нужны; адрес и дату в тексте не пишут; о вложении: <i>Im Anhang finden Sie …</i>)</span></div><div></div></div>
+        <div class="lr cr"><div class="lab">обращение<small>Anrede</small></div><div class="de">Sehr geehrter Herr Weber,</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">повод<small>Anlass</small></div><div class="de">ich schreibe Ihnen, weil ich diese Woche nicht zum Deutschkurs kommen kann.</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">пункт 1<small>причина</small></div><div class="de">Ich bin seit gestern krank und habe Fieber. Mein Arzt sagt, dass ich bis Freitag zu Hause bleiben muss.</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">пункт 2<small>извинение</small></div><div class="de">Bitte entschuldigen Sie mein Fehlen.</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">пункт 3<small>просьба</small></div><div class="de">Ich möchte aber nichts verpassen. Könnten Sie mir deshalb bitte die Hausaufgaben per E-Mail schicken?</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">пункт 4<small>план</small></div><div class="de">Ich hoffe, dass ich am Montag wieder in den Kurs kommen kann.</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">благодарность<small>Dank</small></div><div class="de">Vielen Dank für Ihr Verständnis.</div><div class="cnt"></div></div>
+        <div class="lr cr"><div class="lab">прощание<small>Schluss</small></div><div class="de">Mit freundlichen Grüßen<br>Ivan Petrow</div><div class="cnt"></div></div>
+        <div class="lr tot"><div class="lab">всего слов</div><div class="ru">от обращения до имени; шапка (Von, An, Cc, Betreff, Anhang) не считается</div><div class="cnt" id="total"></div></div>
+    </div>
+
+    <h2>Схема: что писать в каждой части</h2>
+    <table class="plan">
+        <thead><tr><th>Часть</th><th>Слов</th><th>Универсальная формула — подставьте своё</th></tr></thead>
+        <tbody>
+            <tr><td class="part">Обращение<small>Anrede</small></td><td class="n">3–5</td><td class="de f">Sehr geehrte Frau … / Sehr geehrter Herr …, · Sehr geehrte Damen und Herren, (имя неизвестно) · Liebe Frau …, (знакомой, на Sie). После запятой — со строчной (кроме существительных и Sie).</td></tr>
+            <tr><td class="part">Повод<small>Anlass</small></td><td class="n">10–15</td><td class="de f">ich schreibe Ihnen, weil ich … / ich schreibe Ihnen wegen (+ Gen) … / ich möchte … absagen / … fragen / mich für … anmelden</td></tr>
+            <tr><td class="part">Пункт 1<small>причина, ситуация</small></td><td class="n">15–20</td><td class="de f">[Факт: что, когда.] [Деталь: seit … / weil … / dass …]</td></tr>
+            <tr><td class="part">Пункт 2<small>извинение, чувство</small></td><td class="n">5–10</td><td class="de f">Bitte entschuldigen Sie … / Es tut mir leid, dass … / Leider …</td></tr>
+            <tr><td class="part">Пункт 3<small>просьба, вопрос</small></td><td class="n">12–18</td><td class="de f">Könnten Sie mir bitte … ? / Ich möchte Sie bitten, … zu … + зачем: <i>dann …</i> / <i>damit …</i></td></tr>
+            <tr><td class="part">Пункт 4<small>план, предложение, срок</small></td><td class="n">10–15</td><td class="de f">Ich hoffe, dass … / Ich schlage vor, … / Bitte antworten Sie mir bis zum …</td></tr>
+            <tr><td class="part">Благодарность, контакт<small>Dank, Kontakt</small></td><td class="n">5–10</td><td class="de f">Vielen Dank im Voraus für … / Vielen Dank für Ihr Verständnis. · Sie erreichen mich unter …</td></tr>
+            <tr><td class="part">Прощание<small>Schluss</small></td><td class="n">4–6</td><td class="de f">Mit freundlichen Grüßen · Mit freundlichem Gruß · Freundliche Grüße — без запятой, ниже имя</td></tr>
+        </tbody>
+    </table>
+    <p class="note pnote">Пунктов в задании обычно четыре (Leitpunkte): раскройте каждый — это строки «Пункт 1–4». Сумма по строкам — около 80 слов.</p>
+
+    <h2>Советы: как уложиться в 80 слов и не потерять баллы</h2>
+    <ol class="tips">
+        <li><b>Сначала план (2–3 минуты).</b> Выпишите пункты задания и по 1–2 слова на каждый. Каждому пункту — своё предложение: пропущенный пункт дороже грамматической ошибки.</li>
+        <li><b>80 слов — это 7–9 коротких предложений.</b> Считайте предложения, а не слова: на каждый пункт одно–два.</li>
+        <li><b>Пункт = факт + деталь.</b> Не «Ich bin krank», а «Ich bin seit gestern krank und habe Fieber»: когда? что именно? почему?</li>
+        <li><b>Одно предложение — одна мысль, до 15 слов</b> и не больше одного придаточного (<i>weil, dass, wenn</i>): так меньше ошибок.</li>
+        <li><b>Порядок слов — главное.</b> Глагол на втором месте; после <i>weil, dass, wenn</i> — в конце; после <i>deshalb, trotzdem</i> — сразу следом.</li>
+        <li><b>3–4 связки</b> делают текст связным: <i>aber, deshalb, außerdem, dann, trotzdem</i>.</li>
+        <li><b>Не смешивайте регистр.</b> Официально — <i>Sie, Ihnen, Ihr</i> с большой буквы; другу — <i>du, dir, dein</i>. Без сокращений и разговорных слов.</li>
+        <li><b>Просьба — вежливо:</b> <i>Könnten Sie … ? Ich möchte Sie bitten, … zu …</i> Не <i>Ich will</i> и не голый приказ.</li>
+        <li><b>Не знаете слово — опишите:</b> <i>das Gerät, mit dem man Wasser kocht</i>. Пункт бросать нельзя.</li>
+        <li><b>Последние минуты — проверка:</b> все ли пункты · существительные с большой · <i>Sie</i> · глагол на месте · запятая перед <i>weil, dass, wenn</i> · прощание без запятой. Из 30 минут: ≈ 3 план, 20 письмо, 5–7 проверка.</li>
+    </ol>
+</section>
+
+<!-- ======================= ЛИСТ 2: фразы и второй пример ======================= -->
+<section class="page">
+    <h1>Фразы по частям письма</h1>
+    <p class="sub">Берите по одной фразе из каждого блока 1–6 — получится письмо. Многоточие — место для вашего слова.</p>
+
+    <div class="banks">
+        <div class="bank">
+            <h3>1. Начало <small>· Einleitung</small></h3>
+            <ul>
+                <li><span class="de">Ich schreibe Ihnen wegen (+ Gen) …</span> <span class="ru">— пишу вам по поводу …</span></li>
+                <li><span class="de">Ich schreibe Ihnen, weil …</span> <span class="ru">— пишу вам, потому что …</span></li>
+                <li><span class="de">Ich wende mich an Sie, weil …</span> <span class="ru">— обращаюсь к вам, так как …</span></li>
+                <li><span class="de">Ich beziehe mich auf Ihr Schreiben vom …</span> <span class="ru">— ссылаюсь на ваше письмо от …</span></li>
+                <li><span class="de">Vielen Dank für Ihre E-Mail vom …</span> <span class="ru">— спасибо за ваше письмо от …</span></li>
+                <li><span class="de">Ich interessiere mich für …</span> <span class="ru">— меня интересует …</span></li>
+                <li><span class="de">Ich habe Ihre Anzeige in … gelesen.</span> <span class="ru">— я прочитал(а) ваше объявление в …</span></li>
+                <li><span class="de">Hiermit kündige ich …</span> <span class="ru">— настоящим расторгаю …</span></li>
+                <li><span class="de">Ich möchte Ihnen mitteilen, dass …</span> <span class="ru">— хочу сообщить вам, что …</span></li>
+                <li><span class="de">Ich habe eine Frage zu …</span> <span class="ru">— у меня вопрос по …</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>2. Проблема <small>· Problem</small></h3>
+            <ul>
+                <li><span class="de">Am … habe ich … bestellt, aber …</span> <span class="ru">— … я заказал(а) …, но …</span></li>
+                <li><span class="de">Leider funktioniert … nicht. / … ist kaputt.</span> <span class="ru">— … не работает / сломан.</span></li>
+                <li><span class="de">Die Lieferung ist bis heute nicht angekommen.</span> <span class="ru">— заказ до сих пор не пришёл.</span></li>
+                <li><span class="de">Die Ware ist beschädigt angekommen.</span> <span class="ru">— товар пришёл повреждённым.</span></li>
+                <li><span class="de">In der Lieferung fehlt ein Teil.</span> <span class="ru">— в заказе не хватает детали.</span></li>
+                <li><span class="de">Seit zwei Wochen ist die Heizung kaputt.</span> <span class="ru">— уже две недели не работает отопление.</span></li>
+                <li><span class="de">Außerdem … / Darüber hinaus …</span> <span class="ru">— кроме того …</span></li>
+                <li><span class="de">Das ist für mich ein Problem, weil …</span> <span class="ru">— для меня это проблема, потому что …</span></li>
+                <li><span class="de">Ich bin damit nicht zufrieden.</span> <span class="ru">— я этим недоволен (недовольна).</span></li>
+                <li><span class="de">Ich habe schon mehrmals angerufen, aber niemand hat sich gemeldet.</span> <span class="ru">— я уже не раз звонил(а), но никто не ответил.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>3. Решение <small>· Lösung</small></h3>
+            <ul>
+                <li><span class="de">Ich schlage vor, dass Sie …</span> <span class="ru">— предлагаю, чтобы вы …</span></li>
+                <li><span class="de">Ich schlage vor, den Termin zu verschieben.</span> <span class="ru">— предлагаю перенести встречу.</span></li>
+                <li><span class="de">Bitte ersetzen Sie das Gerät.</span> <span class="ru">— замените, пожалуйста, прибор.</span></li>
+                <li><span class="de">Bitte erstatten Sie mir den Betrag.</span> <span class="ru">— возместите мне сумму, пожалуйста.</span></li>
+                <li><span class="de">Bitte reparieren Sie … so schnell wie möglich.</span> <span class="ru">— почините … как можно скорее.</span></li>
+                <li><span class="de">Eine Möglichkeit wäre, … zu …</span> <span class="ru">— один из вариантов — …</span></li>
+                <li><span class="de">Wenn das nicht möglich ist, …</span> <span class="ru">— если это невозможно, …</span></li>
+                <li><span class="de">Ich bin einverstanden, wenn …</span> <span class="ru">— согласен (согласна), если …</span></li>
+                <li><span class="de">Es wäre schön, wenn Sie … könnten.</span> <span class="ru">— было бы хорошо, если бы вы могли …</span></li>
+                <li><span class="de">Ich möchte das Gerät zurückgeben und mein Geld zurückbekommen.</span> <span class="ru">— хочу вернуть прибор и получить деньги обратно.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>4. Просьбы <small>· Bitten</small></h3>
+            <ul>
+                <li><span class="de">Könnten Sie mir bitte … schicken?</span> <span class="ru">— не могли бы вы прислать мне …?</span></li>
+                <li><span class="de">Ich möchte Sie bitten, … zu + Inf.</span> <span class="ru">— прошу вас …</span></li>
+                <li><span class="de">Ich bitte Sie um eine Bestätigung.</span> <span class="ru">— прошу подтверждения.</span></li>
+                <li><span class="de">Bitte teilen Sie mir mit, ob / wann …</span> <span class="ru">— сообщите, пожалуйста, … ли / когда …</span></li>
+                <li><span class="de">Ich wäre Ihnen dankbar, wenn …</span> <span class="ru">— буду вам благодарен (благодарна), если …</span></li>
+                <li><span class="de">Würden Sie mir bitte erklären, …?</span> <span class="ru">— не объясните ли вы мне, …?</span></li>
+                <li><span class="de">Bitte antworten Sie mir bis zum …</span> <span class="ru">— ответьте мне, пожалуйста, до …</span></li>
+                <li><span class="de">Bitte antworten Sie mir innerhalb von 14 Tagen.</span> <span class="ru">— … в течение 14 дней.</span></li>
+                <li><span class="de">Dürfte ich Sie bitten, … zu …?</span> <span class="ru">— позвольте попросить вас …</span></li>
+                <li><span class="de">Bitte schicken Sie mir weitere Informationen.</span> <span class="ru">— пришлите мне, пожалуйста, дополнительную информацию.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>5. Как связаться <small>· Kontakt</small></h3>
+            <ul>
+                <li><span class="de">Sie erreichen mich unter der Nummer …</span> <span class="ru">— со мной можно связаться по номеру …</span></li>
+                <li><span class="de">… oder per E-Mail unter …</span> <span class="ru">— … или по электронной почте …</span></li>
+                <li><span class="de">Ich bin telefonisch erreichbar: Mo.–Fr., 9–12 Uhr.</span> <span class="ru">— по телефону: пн–пт, 9–12.</span></li>
+                <li><span class="de">Am besten erreichen Sie mich vormittags.</span> <span class="ru">— лучше всего меня застать до обеда.</span></li>
+                <li><span class="de">Bitte rufen Sie mich zurück.</span> <span class="ru">— перезвоните мне, пожалуйста.</span></li>
+                <li><span class="de">Bitte melden Sie sich bei mir.</span> <span class="ru">— свяжитесь со мной, пожалуйста.</span></li>
+                <li><span class="de">Bitte schicken Sie Ihre Antwort per Post oder per E-Mail.</span> <span class="ru">— пришлите ответ по почте или по e-mail.</span></li>
+                <li><span class="de">Im Anhang finden Sie eine Kopie / ein Foto.</span> <span class="ru">— во вложении вы найдёте копию / фото.</span></li>
+                <li><span class="de">Sie erreichen mich auch auf dem Handy unter …</span> <span class="ru">— меня можно найти и по мобильному …</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>6. Вежливое прощание <small>· Schluss</small></h3>
+            <ul>
+                <li><span class="de">Vielen Dank im Voraus für Ihre Hilfe.</span> <span class="ru">— заранее спасибо за помощь.</span></li>
+                <li><span class="de">Vielen Dank für Ihr Verständnis.</span> <span class="ru">— спасибо за понимание.</span></li>
+                <li><span class="de">Ich freue mich auf Ihre Antwort.</span> <span class="ru">— жду вашего ответа.</span></li>
+                <li><span class="de">Ich bedanke mich im Voraus für Ihre Bemühungen.</span> <span class="ru">— заранее благодарю за ваши усилия.</span></li>
+                <li><span class="de">Über eine schnelle Antwort würde ich mich freuen.</span> <span class="ru">— буду рад (рада) быстрому ответу.</span></li>
+                <li><span class="de">Für Rückfragen stehe ich Ihnen gern zur Verfügung.</span> <span class="ru">— на вопросы с удовольствием отвечу.</span></li>
+                <li><span class="de"><b>Mit freundlichen Grüßen</b></span> <span class="ru">— стандарт; ниже имя, запятой нет</span></li>
+                <li><span class="de">Mit freundlichem Gruß · Freundliche Grüße</span> <span class="ru">— то же · чуть менее официально</span></li>
+                <li><span class="de">Viele Grüße</span> <span class="ru">— только знакомым</span></li>
+                <li><span class="ru"><i>Hochachtungsvoll</i> устарело, <i>Liebe Grüße</i> — только друзьям.</span></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= ЛИСТ 3: готовые предложения по темам ======================= -->
+<section class="page">
+    <h1>Готовые предложения по темам</h1>
+    <p class="sub">Типовые темы заданий. Берите предложение и подставляйте своё: время, имя, число. Незнакомым — на <b>Sie</b>, другу — на <b>du</b>.</p>
+
+    <div class="topics">
+        <div class="bank">
+            <h3>Болезнь, пропуск <small>· Krankheit, Fehlen</small></h3>
+            <ul>
+                <li><span class="de">Leider bin ich seit gestern krank und kann diese Woche nicht zum Kurs kommen.</span> <span class="ru">— я болею со вчерашнего дня и не смогу прийти на курс.</span></li>
+                <li><span class="de">Mein Sohn hat Fieber und kann morgen nicht in die Schule gehen.</span> <span class="ru">— у сына температура, завтра в школу не пойдёт.</span></li>
+                <li><span class="de">Die Krankschreibung vom Arzt schicke ich Ihnen per E-Mail.</span> <span class="ru">— больничный пришлю по e-mail.</span></li>
+                <li><span class="de">Ich bitte um Entschuldigung für mein Fehlen.</span> <span class="ru">— прошу извинить моё отсутствие.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Приглашение <small>· Einladung (du)</small></h3>
+            <ul>
+                <li><span class="de">Vielen Dank für deine Einladung! Ich komme sehr gern.</span> <span class="ru">— спасибо за приглашение! Приду с удовольствием.</span></li>
+                <li><span class="de">Leider kann ich am Samstag nicht kommen, weil ich arbeiten muss.</span> <span class="ru">— в субботу не смогу: нужно работать.</span></li>
+                <li><span class="de">Soll ich etwas zu essen mitbringen?</span> <span class="ru">— принести что-нибудь поесть?</span></li>
+                <li><span class="de">Ich freue mich schon auf das Fest.</span> <span class="ru">— уже жду праздника.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Перенос приёма <small>· Termin: Arzt, Amt</small></h3>
+            <ul>
+                <li><span class="de">Ich habe am Dienstag um 10 Uhr einen Termin bei Ihnen, kann aber leider nicht kommen.</span> <span class="ru">— у меня приём, но прийти не смогу.</span></li>
+                <li><span class="de">Könnten wir den Termin auf Donnerstag verschieben?</span> <span class="ru">— можно перенести на четверг?</span></li>
+                <li><span class="de">Am selben Tag habe ich ein Vorstellungsgespräch.</span> <span class="ru">— в тот же день у меня собеседование.</span></li>
+                <li><span class="de">Bitte bestätigen Sie mir den neuen Termin.</span> <span class="ru">— подтвердите новую дату.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Квартира <small>· Wohnung suchen, mieten</small></h3>
+            <ul>
+                <li><span class="de">Ich habe Ihre Anzeige im Internet gelesen und interessiere mich für die Wohnung.</span> <span class="ru">— прочитал(а) объявление, меня интересует квартира.</span></li>
+                <li><span class="de">Ist die Wohnung noch frei? Wie hoch sind die Nebenkosten?</span> <span class="ru">— квартира свободна? Каковы коммунальные платежи?</span></li>
+                <li><span class="de">Könnten wir die Wohnung am Samstag besichtigen?</span> <span class="ru">— можно осмотреть квартиру в субботу?</span></li>
+                <li><span class="de">Die Wohnung hat uns sehr gut gefallen, und wir möchten sie gern mieten.</span> <span class="ru">— квартира понравилась, хотим снять.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Жалоба <small>· Lärm, Heizung</small></h3>
+            <ul>
+                <li><span class="de">Seit einigen Wochen ist es nachts in der Wohnung über mir sehr laut.</span> <span class="ru">— уже несколько недель ночью над мной шумно.</span></li>
+                <li><span class="de">Die Heizung funktioniert nicht mehr, und nachts ist es sehr kalt.</span> <span class="ru">— отопление не работает, ночью холодно.</span></li>
+                <li><span class="de">Bitte schicken Sie so schnell wie möglich einen Handwerker.</span> <span class="ru">— пришлите мастера как можно скорее.</span></li>
+                <li><span class="de">Ich bitte Sie, mit den Nachbarn zu sprechen.</span> <span class="ru">— прошу вас поговорить с соседями.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Работа <small>· Krankmeldung, Urlaub, Schicht</small></h3>
+            <ul>
+                <li><span class="de">Ich bin krank und kann leider nicht zur Arbeit kommen.</span> <span class="ru">— я болею и не смогу выйти на работу.</span></li>
+                <li><span class="de">Am Donnerstag habe ich einen wichtigen Termin. Könnte ich die Schicht mit einem Kollegen tauschen?</span> <span class="ru">— можно поменяться сменой?</span></li>
+                <li><span class="de">Ich möchte im August zwei Wochen Urlaub nehmen.</span> <span class="ru">— хочу взять две недели отпуска в августе.</span></li>
+                <li><span class="de">Die Stunden arbeite ich gern nach.</span> <span class="ru">— часы с удовольствием отработаю.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Расторжение договора <small>· Kündigung</small></h3>
+            <ul>
+                <li><span class="de">Hiermit kündige ich meinen Vertrag zum nächstmöglichen Zeitpunkt.</span> <span class="ru">— расторгаю договор в ближайший срок.</span></li>
+                <li><span class="de">Bitte bestätigen Sie mir die Kündigung schriftlich.</span> <span class="ru">— подтвердите расторжение письменно.</span></li>
+                <li><span class="de">Ich ziehe um und brauche eine größere Wohnung.</span> <span class="ru">— переезжаю, нужна квартира побольше.</span></li>
+                <li><span class="de">Bitte teilen Sie mir mit, wann der Vertrag endet.</span> <span class="ru">— сообщите, когда договор заканчивается.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Запрос информации <small>· Kurs, Kindergarten</small></h3>
+            <ul>
+                <li><span class="de">Ich möchte mich über den Deutschkurs B1 informieren.</span> <span class="ru">— хочу узнать о курсе немецкого B1.</span></li>
+                <li><span class="de">Wann beginnt der Kurs, und wie lange dauert er?</span> <span class="ru">— когда начало и сколько длится?</span></li>
+                <li><span class="de">Ich suche für meine Tochter einen Platz im Kindergarten.</span> <span class="ru">— ищу для дочери место в детском саду.</span></li>
+                <li><span class="de">Könnten Sie mir bitte Informationen zur Anmeldung schicken?</span> <span class="ru">— пришлите информацию о записи.</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Школа <small>· Gespräch, Klassenfahrt</small></h3>
+            <ul>
+                <li><span class="de">Mein Sohn hat in Mathematik große Probleme.</span> <span class="ru">— у сына большие проблемы с математикой.</span></li>
+                <li><span class="de">Könnten wir einen Termin für ein Gespräch vereinbaren?</span> <span class="ru">— можно договориться о встрече?</span></li>
+                <li><span class="de">Ich bin einverstanden, dass meine Tochter an der Klassenfahrt teilnimmt.</span> <span class="ru">— согласен (согласна), чтобы дочь поехала.</span></li>
+                <li><span class="de">Wie viel kostet die Fahrt, und was muss mein Kind mitbringen?</span> <span class="ru">— сколько стоит и что взять с собой?</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Письмо другу <small>· Freunde (du)</small></h3>
+            <ul>
+                <li><span class="de">Vielen Dank, dass du auf meine Kinder aufgepasst hast!</span> <span class="ru">— спасибо, что присмотрел(а) за детьми!</span></li>
+                <li><span class="de">Kannst du mir am Samstag beim Umzug helfen?</span> <span class="ru">— поможешь мне в субботу с переездом?</span></li>
+                <li><span class="de">Ich lade dich zum Essen ein.</span> <span class="ru">— приглашаю тебя пообедать (поужинать).</span></li>
+                <li><span class="de">Melde dich bald!</span> <span class="ru">— дай о себе знать!</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Практика, график работы <small>· Praktikum, Arbeitszeit</small></h3>
+            <ul>
+                <li><span class="de">Ich habe Ihre Anzeige gelesen und möchte mich um das Praktikum bewerben.</span> <span class="ru">— хочу подать заявку на практику.</span></li>
+                <li><span class="de">Ich habe zwei Jahre im Verkauf gearbeitet.</span> <span class="ru">— я два года работал(а) в торговле.</span></li>
+                <li><span class="de">Ab November muss ich meine Tochter in den Kindergarten bringen.</span> <span class="ru">— с ноября отвожу дочь в детский сад.</span></li>
+                <li><span class="de">Könnte ich deshalb erst um 8 Uhr anfangen?</span> <span class="ru">— можно поэтому начинать в 8?</span></li>
+            </ul>
+        </div>
+        <div class="bank">
+            <h3>Покупка <small>· Reklamation, Rückgabe</small></h3>
+            <ul>
+                <li><span class="de">Ich habe die Jacke in Größe M bestellt, aber Sie haben mir Größe L geschickt.</span> <span class="ru">— заказал(а) M, прислали L.</span></li>
+                <li><span class="de">Ich möchte die Ware umtauschen.</span> <span class="ru">— хочу обменять товар.</span></li>
+                <li><span class="de">Bitte erstatten Sie mir den Kaufpreis.</span> <span class="ru">— верните мне стоимость покупки.</span></li>
+                <li><span class="de">Die Rechnung lege ich bei.</span> <span class="ru">— счёт прилагаю.</span></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= ЛИСТЫ 4–5: глаголы ======================= -->
+<section class="page verbs">
+    <h1>Глаголы для писем</h1>
+    <p class="sub">Глагол с предлогом и падежом · Partizip II · перевод · пример. Perfekt: <b>Ich habe</b> + Partizip II (<i>Ich habe bestellt</i>); у глаголов с <b>ist</b> — <b>Ich bin</b> … (<i>Es ist passiert</i>). <b>sich</b> — возвратный глагол: <i>Ich habe mich gemeldet</i>.</p>
+
+    <div class="vg">
+        <h3>Сообщить, ответить, связаться</h3>
+        <table>
+            <tr><td class="v"><span class="de">schreiben</span></td><td class="p"><span class="de">geschrieben</span></td><td class="t">писать</td><td class="e"><span class="de">Ich schreibe Ihnen wegen meiner Bestellung.</span></td></tr>
+            <tr><td class="v"><span class="de">mitteilen</span><span class="case">+ Dat</span></td><td class="p"><span class="de">mitgeteilt</span></td><td class="t">сообщать</td><td class="e"><span class="de">Bitte teilen Sie mir den Termin mit.</span></td></tr>
+            <tr><td class="v"><span class="de">informieren</span><span class="case">über + Akk</span></td><td class="p"><span class="de">informiert</span></td><td class="t">информировать о</td><td class="e"><span class="de">Bitte informieren Sie mich über die Kosten.</span></td></tr>
+            <tr><td class="v"><span class="de">antworten</span><span class="case">auf + Akk</span></td><td class="p"><span class="de">geantwortet</span></td><td class="t">отвечать на</td><td class="e"><span class="de">Ich antworte auf Ihre E-Mail vom 5. Oktober.</span></td></tr>
+            <tr><td class="v"><span class="de">sich melden</span><span class="case">bei + Dat</span></td><td class="p"><span class="de">gemeldet</span></td><td class="t">откликнуться, связаться</td><td class="e"><span class="de">Ich habe mich schon zweimal bei Ihnen gemeldet.</span></td></tr>
+            <tr><td class="v"><span class="de">sich beziehen</span><span class="case">auf + Akk</span></td><td class="p"><span class="de">bezogen</span></td><td class="t">ссылаться на</td><td class="e"><span class="de">Ich beziehe mich auf Ihr Schreiben vom 3. Mai.</span></td></tr>
+            <tr><td class="v"><span class="de">bestätigen</span></td><td class="p"><span class="de">bestätigt</span></td><td class="t">подтверждать</td><td class="e"><span class="de">Bitte bestätigen Sie den Termin.</span></td></tr>
+            <tr><td class="v"><span class="de">erklären</span></td><td class="p"><span class="de">erklärt</span></td><td class="t">объяснять</td><td class="e"><span class="de">Könnten Sie mir das bitte erklären?</span></td></tr>
+            <tr><td class="v"><span class="de">erreichen</span></td><td class="p"><span class="de">erreicht</span></td><td class="t">связаться, дозвониться</td><td class="e"><span class="de">Sie erreichen mich unter 0123 456789.</span></td></tr>
+            <tr><td class="v"><span class="de">anrufen</span></td><td class="p"><span class="de">angerufen</span></td><td class="t">звонить</td><td class="e"><span class="de">Ich habe Sie gestern angerufen.</span></td></tr>
+            <tr><td class="v"><span class="de">zurückrufen</span></td><td class="p"><span class="de">zurückgerufen</span></td><td class="t">перезвонить</td><td class="e"><span class="de">Bitte rufen Sie mich zurück.</span></td></tr>
+            <tr><td class="v"><span class="de">schicken</span></td><td class="p"><span class="de">geschickt</span></td><td class="t">отправлять, присылать</td><td class="e"><span class="de">Bitte schicken Sie mir das Formular.</span></td></tr>
+            <tr><td class="v"><span class="de">erhalten</span></td><td class="p"><span class="de">erhalten</span></td><td class="t">получать (офиц.)</td><td class="e"><span class="de">Ich habe Ihre Rechnung erhalten.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Просить, предлагать, требовать</h3>
+        <table>
+            <tr><td class="v"><span class="de">bitten</span><span class="case">um + Akk</span></td><td class="p"><span class="de">gebeten</span></td><td class="t">просить о</td><td class="e"><span class="de">Ich bitte um Ihre Antwort.</span></td></tr>
+            <tr><td class="v"><span class="de">fragen</span><span class="case">nach + Dat</span></td><td class="p"><span class="de">gefragt</span></td><td class="t">спрашивать о</td><td class="e"><span class="de">Ich frage nach dem Preis.</span></td></tr>
+            <tr><td class="v"><span class="de">vorschlagen</span></td><td class="p"><span class="de">vorgeschlagen</span></td><td class="t">предлагать (идею)</td><td class="e"><span class="de">Ich schlage einen neuen Termin vor.</span></td></tr>
+            <tr><td class="v"><span class="de">anbieten</span></td><td class="p"><span class="de">angeboten</span></td><td class="t">предлагать (услугу, помощь)</td><td class="e"><span class="de">Sie haben mir einen Rabatt angeboten.</span></td></tr>
+            <tr><td class="v"><span class="de">verlangen</span></td><td class="p"><span class="de">verlangt</span></td><td class="t">требовать</td><td class="e"><span class="de">Ich verlange eine Erklärung.</span></td></tr>
+            <tr><td class="v"><span class="de">erwarten</span></td><td class="p"><span class="de">erwartet</span></td><td class="t">ожидать</td><td class="e"><span class="de">Ich erwarte Ihre Antwort bis Freitag.</span></td></tr>
+            <tr><td class="v"><span class="de">benötigen</span></td><td class="p"><span class="de">benötigt</span></td><td class="t">нуждаться в (офиц.)</td><td class="e"><span class="de">Ich benötige eine Bestätigung.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Проблема, жалоба</h3>
+        <table>
+            <tr><td class="v"><span class="de">sich beschweren</span><span class="case">über + Akk (bei + Dat)</span></td><td class="p"><span class="de">beschwert</span></td><td class="t">жаловаться на</td><td class="e"><span class="de">Ich beschwere mich über den Lärm.</span></td></tr>
+            <tr><td class="v"><span class="de">reklamieren</span></td><td class="p"><span class="de">reklamiert</span></td><td class="t">предъявить претензию</td><td class="e"><span class="de">Ich möchte die Ware reklamieren.</span></td></tr>
+            <tr><td class="v"><span class="de">funktionieren</span></td><td class="p"><span class="de">funktioniert</span></td><td class="t">работать (о приборе)</td><td class="e"><span class="de">Das Gerät funktioniert nicht.</span></td></tr>
+            <tr><td class="v"><span class="de">kaputtgehen</span></td><td class="p"><span class="de">ist kaputtgegangen</span></td><td class="t">ломаться</td><td class="e"><span class="de">Das Gerät ist nach zwei Tagen kaputtgegangen.</span></td></tr>
+            <tr><td class="v"><span class="de">fehlen</span></td><td class="p"><span class="de">gefehlt</span></td><td class="t">не хватать</td><td class="e"><span class="de">In der Lieferung fehlt ein Teil.</span></td></tr>
+            <tr><td class="v"><span class="de">stören</span></td><td class="p"><span class="de">gestört</span></td><td class="t">мешать, беспокоить</td><td class="e"><span class="de">Der Lärm stört mich sehr.</span></td></tr>
+            <tr><td class="v"><span class="de">passieren</span></td><td class="p"><span class="de">ist passiert</span></td><td class="t">случаться</td><td class="e"><span class="de">Leider ist ein Fehler passiert.</span></td></tr>
+            <tr><td class="v"><span class="de">beschädigen</span></td><td class="p"><span class="de">beschädigt</span></td><td class="t">повредить</td><td class="e"><span class="de">Die Post hat das Paket beschädigt.</span></td></tr>
+            <tr><td class="v"><span class="de">verlieren</span></td><td class="p"><span class="de">verloren</span></td><td class="t">терять</td><td class="e"><span class="de">Ich habe meine Unterlagen verloren.</span></td></tr>
+            <tr><td class="v"><span class="de">sich entschuldigen</span><span class="case">für + Akk (bei + Dat)</span></td><td class="p"><span class="de">entschuldigt</span></td><td class="t">извиняться за</td><td class="e"><span class="de">Ich entschuldige mich für die Verspätung.</span></td></tr>
+            <tr><td class="v"><span class="de">bedauern</span></td><td class="p"><span class="de">bedauert</span></td><td class="t">сожалеть</td><td class="e"><span class="de">Ich bedauere, dass ich nicht kommen kann.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Решение, исправление</h3>
+        <table>
+            <tr><td class="v"><span class="de">reparieren</span></td><td class="p"><span class="de">repariert</span></td><td class="t">чинить</td><td class="e"><span class="de">Bitte reparieren Sie die Heizung.</span></td></tr>
+            <tr><td class="v"><span class="de">ersetzen</span></td><td class="p"><span class="de">ersetzt</span></td><td class="t">заменять</td><td class="e"><span class="de">Bitte ersetzen Sie das Gerät.</span></td></tr>
+            <tr><td class="v"><span class="de">umtauschen</span></td><td class="p"><span class="de">umgetauscht</span></td><td class="t">обменять</td><td class="e"><span class="de">Ich möchte die Hose umtauschen.</span></td></tr>
+            <tr><td class="v"><span class="de">zurückschicken</span></td><td class="p"><span class="de">zurückgeschickt</span></td><td class="t">отправить обратно</td><td class="e"><span class="de">Ich schicke das Paket zurück.</span></td></tr>
+            <tr><td class="v"><span class="de">erstatten</span></td><td class="p"><span class="de">erstattet</span></td><td class="t">возместить (деньги)</td><td class="e"><span class="de">Bitte erstatten Sie mir den Betrag.</span></td></tr>
+            <tr><td class="v"><span class="de">zurückzahlen</span></td><td class="p"><span class="de">zurückgezahlt</span></td><td class="t">вернуть (деньги)</td><td class="e"><span class="de">Bitte zahlen Sie mir das Geld zurück.</span></td></tr>
+            <tr><td class="v"><span class="de">beheben</span></td><td class="p"><span class="de">behoben</span></td><td class="t">устранить (неисправность)</td><td class="e"><span class="de">Bitte beheben Sie den Fehler.</span></td></tr>
+            <tr><td class="v"><span class="de">klären</span></td><td class="p"><span class="de">geklärt</span></td><td class="t">прояснить, уладить</td><td class="e"><span class="de">Ich möchte das Problem klären.</span></td></tr>
+            <tr><td class="v"><span class="de">sich kümmern</span><span class="case">um + Akk</span></td><td class="p"><span class="de">gekümmert</span></td><td class="t">заняться, позаботиться</td><td class="e"><span class="de">Bitte kümmern Sie sich um das Problem.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Заказ, договор, деньги</h3>
+        <table>
+            <tr><td class="v"><span class="de">bestellen</span></td><td class="p"><span class="de">bestellt</span></td><td class="t">заказывать</td><td class="e"><span class="de">Ich habe am 5. Oktober ein Gerät bestellt.</span></td></tr>
+            <tr><td class="v"><span class="de">liefern</span></td><td class="p"><span class="de">geliefert</span></td><td class="t">доставлять</td><td class="e"><span class="de">Die Firma hat die Ware nicht geliefert.</span></td></tr>
+            <tr><td class="v"><span class="de">bezahlen</span></td><td class="p"><span class="de">bezahlt</span></td><td class="t">платить</td><td class="e"><span class="de">Ich habe die Rechnung schon bezahlt.</span></td></tr>
+            <tr><td class="v"><span class="de">überweisen</span></td><td class="p"><span class="de">überwiesen</span></td><td class="t">переводить (деньги)</td><td class="e"><span class="de">Ich überweise Ihnen das Geld heute.</span></td></tr>
+            <tr><td class="v"><span class="de">kündigen</span></td><td class="p"><span class="de">gekündigt</span></td><td class="t">расторгнуть (договор), уволиться</td><td class="e"><span class="de">Ich kündige meinen Vertrag zum 31. Dezember.</span></td></tr>
+            <tr><td class="v"><span class="de">abschließen</span></td><td class="p"><span class="de">abgeschlossen</span></td><td class="t">заключить (договор)</td><td class="e"><span class="de">Ich habe im Mai einen Vertrag abgeschlossen.</span></td></tr>
+            <tr><td class="v"><span class="de">verlängern</span></td><td class="p"><span class="de">verlängert</span></td><td class="t">продлить</td><td class="e"><span class="de">Ich möchte den Vertrag verlängern.</span></td></tr>
+            <tr><td class="v"><span class="de">buchen</span></td><td class="p"><span class="de">gebucht</span></td><td class="t">бронировать</td><td class="e"><span class="de">Ich habe einen Kurs gebucht.</span></td></tr>
+            <tr><td class="v"><span class="de">stornieren</span></td><td class="p"><span class="de">storniert</span></td><td class="t">отменить (заказ, бронь)</td><td class="e"><span class="de">Ich möchte meine Bestellung stornieren.</span></td></tr>
+            <tr><td class="v"><span class="de">sich anmelden</span><span class="case">zu + Dat (für + Akk)</span></td><td class="p"><span class="de">angemeldet</span></td><td class="t">записаться на</td><td class="e"><span class="de">Ich möchte mich zum Deutschkurs anmelden.</span></td></tr>
+            <tr><td class="v"><span class="de">sich abmelden</span><span class="case">von + Dat</span></td><td class="p"><span class="de">abgemeldet</span></td><td class="t">отменить запись, выписаться из списка</td><td class="e"><span class="de">Ich möchte mich vom Kurs abmelden.</span></td></tr>
+            <tr><td class="v"><span class="de">sich bewerben</span><span class="case">um + Akk (bei + Dat)</span></td><td class="p"><span class="de">beworben</span></td><td class="t">подать заявление на</td><td class="e"><span class="de">Ich bewerbe mich um die Stelle.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Встречи, сроки</h3>
+        <table>
+            <tr><td class="v"><span class="de">vereinbaren</span></td><td class="p"><span class="de">vereinbart</span></td><td class="t">договориться о</td><td class="e"><span class="de">Wir haben einen Termin vereinbart.</span></td></tr>
+            <tr><td class="v"><span class="de">verschieben</span></td><td class="p"><span class="de">verschoben</span></td><td class="t">перенести</td><td class="e"><span class="de">Könnten wir den Termin verschieben?</span></td></tr>
+            <tr><td class="v"><span class="de">absagen</span></td><td class="p"><span class="de">abgesagt</span></td><td class="t">отменить, отказаться</td><td class="e"><span class="de">Leider muss ich den Termin absagen.</span></td></tr>
+            <tr><td class="v"><span class="de">teilnehmen</span><span class="case">an + Dat</span></td><td class="p"><span class="de">teilgenommen</span></td><td class="t">участвовать в</td><td class="e"><span class="de">Ich möchte am Kurs teilnehmen.</span></td></tr>
+            <tr><td class="v"><span class="de">stattfinden</span></td><td class="p"><span class="de">stattgefunden</span></td><td class="t">состояться</td><td class="e"><span class="de">Findet der Kurs am Montag statt?</span></td></tr>
+            <tr><td class="v"><span class="de">dauern</span></td><td class="p"><span class="de">gedauert</span></td><td class="t">длиться</td><td class="e"><span class="de">Wie lange dauert der Kurs?</span></td></tr>
+            <tr><td class="v"><span class="de">vorbeikommen</span></td><td class="p"><span class="de">ist vorbeigekommen</span></td><td class="t">зайти, заглянуть</td><td class="e"><span class="de">Ich komme morgen bei Ihnen vorbei.</span></td></tr>
+            <tr><td class="v"><span class="de">abholen</span></td><td class="p"><span class="de">abgeholt</span></td><td class="t">забрать</td><td class="e"><span class="de">Ich hole das Paket am Freitag ab.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Документы и жильё</h3>
+        <table>
+            <tr><td class="v"><span class="de">beantragen</span></td><td class="p"><span class="de">beantragt</span></td><td class="t">подавать заявление на</td><td class="e"><span class="de">Ich möchte eine Bescheinigung beantragen.</span></td></tr>
+            <tr><td class="v"><span class="de">ausfüllen</span></td><td class="p"><span class="de">ausgefüllt</span></td><td class="t">заполнять</td><td class="e"><span class="de">Ich habe das Formular ausgefüllt.</span></td></tr>
+            <tr><td class="v"><span class="de">unterschreiben</span></td><td class="p"><span class="de">unterschrieben</span></td><td class="t">подписывать</td><td class="e"><span class="de">Bitte unterschreiben Sie den Vertrag.</span></td></tr>
+            <tr><td class="v"><span class="de">einreichen</span></td><td class="p"><span class="de">eingereicht</span></td><td class="t">подавать (документы)</td><td class="e"><span class="de">Ich reiche die Unterlagen bis Freitag ein.</span></td></tr>
+            <tr><td class="v"><span class="de">abgeben</span></td><td class="p"><span class="de">abgegeben</span></td><td class="t">сдать</td><td class="e"><span class="de">Ich habe den Antrag gestern abgegeben.</span></td></tr>
+            <tr><td class="v"><span class="de">mitbringen</span></td><td class="p"><span class="de">mitgebracht</span></td><td class="t">принести с собой</td><td class="e"><span class="de">Bitte bringen Sie Ihren Pass mit.</span></td></tr>
+            <tr><td class="v"><span class="de">ändern</span></td><td class="p"><span class="de">geändert</span></td><td class="t">изменить</td><td class="e"><span class="de">Ich möchte meine Adresse ändern.</span></td></tr>
+            <tr><td class="v"><span class="de">mieten</span></td><td class="p"><span class="de">gemietet</span></td><td class="t">снимать (жильё)</td><td class="e"><span class="de">Ich habe die Wohnung im Mai gemietet.</span></td></tr>
+            <tr><td class="v"><span class="de">einziehen</span></td><td class="p"><span class="de">ist eingezogen</span></td><td class="t">въехать</td><td class="e"><span class="de">Ich bin am 1. Mai eingezogen.</span></td></tr>
+            <tr><td class="v"><span class="de">ausziehen</span></td><td class="p"><span class="de">ist ausgezogen</span></td><td class="t">съехать</td><td class="e"><span class="de">Ich ziehe am 1. Dezember aus.</span></td></tr>
+            <tr><td class="v"><span class="de">umziehen</span></td><td class="p"><span class="de">ist umgezogen</span></td><td class="t">переехать</td><td class="e"><span class="de">Ich bin im Mai nach Kassel umgezogen.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="vg">
+        <h3>Интерес, благодарность, надежда</h3>
+        <table>
+            <tr><td class="v"><span class="de">sich interessieren</span><span class="case">für + Akk</span></td><td class="p"><span class="de">interessiert</span></td><td class="t">интересоваться</td><td class="e"><span class="de">Ich interessiere mich für Ihren Kurs.</span></td></tr>
+            <tr><td class="v"><span class="de">sich freuen</span><span class="case">auf / über + Akk</span></td><td class="p"><span class="de">gefreut</span></td><td class="t">радоваться (будущему / случившемуся)</td><td class="e"><span class="de">Ich freue mich auf Ihre Antwort.</span></td></tr>
+            <tr><td class="v"><span class="de">sich bedanken</span><span class="case">für + Akk</span></td><td class="p"><span class="de">bedankt</span></td><td class="t">благодарить за</td><td class="e"><span class="de">Ich bedanke mich für Ihre Hilfe.</span></td></tr>
+            <tr><td class="v"><span class="de">danken</span><span class="case">+ Dat</span></td><td class="p"><span class="de">gedankt</span></td><td class="t">благодарить (кого)</td><td class="e"><span class="de">Ich danke Ihnen für Ihre Hilfe.</span></td></tr>
+            <tr><td class="v"><span class="de">hoffen</span><span class="case">auf + Akk</span></td><td class="p"><span class="de">gehofft</span></td><td class="t">надеяться на</td><td class="e"><span class="de">Ich hoffe auf eine schnelle Lösung.</span></td></tr>
+            <tr><td class="v"><span class="de">verstehen</span></td><td class="p"><span class="de">verstanden</span></td><td class="t">понимать</td><td class="e"><span class="de">Ich habe Ihr Schreiben nicht ganz verstanden.</span></td></tr>
+        </table>
+    </div>
+
+    <div class="rules">
+        <ul>
+            <li><b>Отделяемая приставка</b> уходит в конец: <i>Bitte rufen Sie mich zurück.</i> В Perfekt: <i>Ich habe zurückgerufen.</i></li>
+            <li><b>Просьба с zu:</b> <i>Ich bitte Sie, mir das Geld zurückzuzahlen.</i> <b>С dass:</b> <i>Ich schlage vor, dass Sie das Gerät ersetzen.</i></li>
+            <li><b>Возвратный глагол:</b> <i>sich</i> меняется по лицу: <i>Ich melde mich. Ich habe mich angemeldet.</i></li>
+            <li><b>Просьба — вежливо:</b> <i>Könnten Sie …? Ich möchte Sie bitten, … zu …</i> Не <i>Ich will</i>.</li>
+        </ul>
+    </div>
+</section>
+
+
+<script>
+    // Слов в каждой части письма считает сама страница: цифры в примере не расходятся с текстом
+    (function () {
+        var всего = 0;
+        document.querySelectorAll('.lr.cr').forEach(function (строка) {
+            var n = строка.querySelector('.de').innerText.trim().split(/\s+/).filter(Boolean).length;
+            строка.querySelector('.cnt').textContent = n;
+            всего += n;
+        });
+        var итог = document.getElementById('total');
+        if (итог) итог.textContent = всего;
+    })();
+</script>
+</body>
+</html>
