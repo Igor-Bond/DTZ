@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="fa" dir="ltr">
+<head>
+<!-- Persian edition: German is unchanged, Russian explanations replaced with Persian (isolated RTL runs). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>کارت جیبی — نامه‌ی B1</title>
+
+<style>
+    @page { size: A4; margin: 8mm 9mm; }
+
+    * { box-sizing: border-box; }
+
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    body {
+        margin: 0;
+        font: 8.8pt/1.3 "Segoe UI", Arial, sans-serif;
+        color: #1b2233;
+        background: #fff;
+    }
+
+    .page { width: 192mm; margin: 0 auto; }
+
+    .de { font-family: "Sitka Text", Charter, Georgia, Cambria, serif; color: #13203f; font-size: 9.4pt; }
+    .ru { color: #66708a; font-size: 7.6pt; }
+
+    h1 { margin: 0; font-size: 15pt; letter-spacing: -0.01em; }
+    .sub { margin: 0.6mm 0 2.4mm; color: #5b6478; font-size: 8pt; }
+    h2 { margin: 0 0 1.2mm; font-size: 8.6pt; color: #2f4fd0; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .card { border: 0.8pt solid #d3d9e8; border-radius: 1.8mm; padding: 1.8mm 2.8mm 2mm; break-inside: avoid; background: #fff; }
+    .card + .card { margin-top: 2.6mm; }
+    .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3mm; margin-top: 2.6mm; align-items: start; }
+    .two .card + .card { margin-top: 2.6mm; }
+    .two > div > .card:first-child { margin-top: 0; }
+
+    /* ---------- скелет ---------- */
+    .skel { display: grid; grid-template-columns: repeat(8, 1fr); gap: 1.4mm; }
+    .skel div { border-radius: 1.4mm; background: #eef2ff; padding: 1.2mm 1.4mm; text-align: center; line-height: 1.2; }
+    .skel b { display: block; font-size: 7.6pt; color: #2f4fd0; }
+    .skel span { display: block; font-size: 6.8pt; color: #66708a; }
+    .skel .n { display: block; margin-top: 0.6mm; font-size: 9.4pt; font-weight: 700; color: #1b2233; }
+    .skel-tot { margin-top: 1.2mm; font-size: 7.6pt; color: #5b6478; }
+
+    /* ---------- формулы ---------- */
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    td { padding: 1mm 0; vertical-align: top; border-bottom: 0.4pt dashed #d3d9e8; line-height: 1.24; }
+    tr:last-child td { border-bottom: 0; }
+    .f td.p { width: 27mm; font-size: 7.6pt; font-weight: 700; color: #2f4fd0; line-height: 1.15; padding-right: 1.4mm; }
+    .f td.p small { display: block; font-weight: 400; color: #8a93a8; font-size: 6.6pt; }
+
+    /* ---------- правила ---------- */
+    .rule { margin: 0 0 1.4mm; line-height: 1.28; }
+    .rule b { color: #2f4fd0; }
+    .rule .de { display: block; margin-top: 0.3mm; font-size: 9pt; }
+    .chips { line-height: 1.55; }
+    .chips .de { font-size: 9.2pt; white-space: nowrap; }
+    .chips .de { display: inline-block; padding-right: 2.2mm; margin-right: 1.8mm; border-right: 0.8pt solid #c3cadb; line-height: 1.3; }
+    .chips .de:last-child { border-right: 0; }
+
+    /* ---------- глаголы ---------- */
+    .verbs { columns: 3; column-gap: 3mm; }
+    .verbs div { break-inside: avoid; padding: 0.35mm 0; border-bottom: 0.4pt dashed #e1e5f0; line-height: 1.2; }
+    .verbs .de { font-size: 8.8pt; }
+    .verbs .v { font-weight: 600; }
+    .verbs .p { color: #4a5470; }
+
+    /* ---------- чек-лист ---------- */
+    .check { margin: 0; padding: 0; list-style: none; }
+    .check li { position: relative; margin: 0 0 1.1mm; padding-left: 5mm; line-height: 1.25; }
+    .check li::before { content: ""; position: absolute; left: 0; top: 0.3mm; width: 3.2mm; height: 3.2mm; border: 0.8pt solid #1d8f5d; border-radius: 0.8mm; }
+    .time { display: flex; margin-top: 1.6mm; border-radius: 1.4mm; overflow: hidden; font-size: 7pt; line-height: 1.2; }
+    .time div { padding: 0.9mm 1.6mm; color: #fff; }
+    .time .a { flex: 3; background: #6d83e8; } .time .b { flex: 20; background: #2f4fd0; } .time .c { flex: 7; background: #1d8f5d; }
+
+    /* ---------- персидское издание ---------- */
+    body { font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+    h1, h2, th, .lab, .num, .skel b, .skel span, .time div, td.p, .fr .l, .strip span, .cap, .task .row b, .fields, .check li, .starters, .rule b {
+        letter-spacing: 0 !important; text-transform: none !important;
+    }
+    [dir="rtl"] .de { direction: ltr; unicode-bidi: isolate; }
+    span[dir="rtl"], b[dir="rtl"], bdi[dir="rtl"], small[dir="rtl"], th span { font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+    .sub[dir="rtl"], .cap[dir="rtl"], .skel-tot[dir="rtl"], .starters[dir="rtl"], div.ru[dir="rtl"] { text-align: right; }
+    .check li[dir="rtl"] { padding-left: 0; padding-right: 5.4mm; }
+    .check li[dir="rtl"]::before { left: auto; right: 0; }
+    .hint { direction: rtl; unicode-bidi: isolate; }
+    .fields div { direction: rtl; }
+    .fields .de { direction: ltr; }
+    .time[dir="rtl"] div { text-align: right; }
+    td.conn .de { display: block; direction: ltr; text-align: left; }
+    .f td.p small, .plan td.part small, td.num small { text-align: left; }
+    h1 { direction: rtl; text-align: right; }
+    .top { direction: rtl; }
+    .top .sub { text-align: right; }
+</style>
+</head>
+<body>
+<section class="page">
+
+    <h1><span dir="rtl">کارت جیبی · نامه‌ی B1 در حدود ۸۰ کلمه</span></h1>
+    <p class="sub" dir="rtl">ایمیل رسمی با <b dir="ltr">Sie</b>. هرچه لازم است روی یک برگه: ساختار، عبارت‌ها، حرف‌های ربط، فعل‌ها، بازبینی. چاپ کنید و تا کنید.</p>
+
+    <div class="card">
+        <h2><span dir="rtl">ساختار نامه: بخش‌ها و تعداد کلمه</span></h2>
+        <div class="skel">
+            <div><b>خطاب</b><span>Anrede</span><span class="n" dir="ltr">3–5</span></div>
+            <div><b>دلیل نوشتن</b><span>Anlass</span><span class="n" dir="ltr">10–15</span></div>
+            <div><b>بند ۱</b><span>دلیل</span><span class="n" dir="ltr">15–20</span></div>
+            <div><b>بند ۲</b><span>عذرخواهی</span><span class="n" dir="ltr">5–10</span></div>
+            <div><b>بند ۳</b><span>درخواست</span><span class="n" dir="ltr">12–18</span></div>
+            <div><b>بند ۴</b><span>برنامه، مهلت</span><span class="n" dir="ltr">10–15</span></div>
+            <div><b>تشکر</b><span>Dank</span><span class="n" dir="ltr">5–10</span></div>
+            <div><b>عبارت پایانی</b><span>Schluss</span><span class="n" dir="ltr">4–6</span></div>
+        </div>
+        <div class="skel-tot" dir="rtl">مجموع ≈ ۸۰ کلمه = ۷ تا ۹ جمله‌ی کوتاه (بازه‌ی مناسب ۷۰ تا ۱۱۰). بخش بالای ایمیل (<span class="de">Von, An, Betreff</span>) را در شمارش نیاورید.</div>
+    </div>
+
+    <div class="card">
+        <h2><span dir="rtl">عبارت‌ها به تفکیک بخش</span></h2>
+        <table class="f">
+            <tr><td class="p">خطاب</td><td><span class="de">Sehr geehrte Damen und Herren, · Sehr geehrte Frau … / Sehr geehrter Herr …,</span> <span class="ru"><bdi dir="rtl">بعد از ویرگول با حرف کوچک</bdi></span></td></tr>
+            <tr><td class="p">دلیل نوشتن</td><td><span class="de">ich schreibe Ihnen, weil ich … / ich schreibe Ihnen wegen (+ Gen) …</span></td></tr>
+            <tr><td class="p">بند ۱<small dir="rtl">دلیل</small></td><td><span class="de">Ich bin seit gestern krank und habe Fieber. · … weil … · … dass …</span></td></tr>
+            <tr><td class="p">بند ۲<small dir="rtl">عذرخواهی</small></td><td><span class="de">Bitte entschuldigen Sie … / Es tut mir leid, dass …</span></td></tr>
+            <tr><td class="p">بند ۳<small dir="rtl">درخواست</small></td><td><span class="de">Könnten Sie mir bitte … ? / Ich möchte Sie bitten, … zu …</span></td></tr>
+            <tr><td class="p">بند ۴<small dir="rtl">برنامه، مهلت</small></td><td><span class="de">Ich hoffe, dass … / Ich schlage vor, … / Bitte antworten Sie mir bis zum …</span></td></tr>
+            <tr><td class="p">تشکر</td><td><span class="de">Vielen Dank im Voraus für … / Vielen Dank für Ihr Verständnis.</span></td></tr>
+            <tr><td class="p">تماس</td><td><span class="de">Sie erreichen mich unter … / Bitte rufen Sie mich zurück.</span></td></tr>
+            <tr><td class="p">عبارت پایانی</td><td><span class="de">Mit freundlichen Grüßen</span> <span class="ru"><bdi dir="rtl">+ نام در خط بعد، بدون ویرگول</bdi></span></td></tr>
+        </table>
+    </div>
+
+    <div class="two">
+        <div>
+            <div class="card">
+                <h2><span dir="rtl">ترتیب کلمات در ۳ خط</span></h2>
+                <div class="rule"><b dir="rtl">فعل — در جای دوم:</b><span class="de">Ich schreibe Ihnen wegen meiner Bestellung.</span></div>
+                <div class="rule"><b dir="rtl">بعد از <span dir="ltr">weil, dass, wenn</span> — در آخر جمله:</b><span class="de">Ich hoffe, dass ich am Montag wieder in den Kurs kommen kann.</span></div>
+                <div class="rule"><b dir="rtl">بعد از <span dir="ltr">deshalb, trotzdem</span> — بلافاصله پس از آن‌ها:</b><span class="de">Deshalb kann ich nicht kommen.</span></div>
+            </div>
+            <div class="card">
+                <h2><span dir="rtl">حرف‌های ربط</span></h2>
+                <div class="chips"><span class="de">aber</span> <span class="de">deshalb</span> <span class="de">außerdem</span> <span class="de">dann</span> <span class="de">trotzdem</span> <span class="de">zuerst</span> <span class="de">danach</span></div>
+                <div class="ru" dir="rtl">۳ تا ۴ حرف ربط در هر نامه — متن منسجم می‌شود.</div>
+            </div>
+            <div class="card">
+                <h2><span dir="rtl">زمان و مهلت</span></h2>
+                <div class="chips"><span class="de">am Montag</span> <span class="de">um 10 Uhr</span> <span class="de">von 8 bis 12 Uhr</span> <span class="de">ab November</span> <span class="de">bis zum 31. Oktober</span> <span class="de">seit gestern</span> <span class="de">innerhalb von 14 Tagen</span> <span class="de">in zwei Wochen</span></div>
+            </div>
+        </div>
+        <div>
+            <div class="card">
+                <h2><span dir="rtl">بازبینی در ۷ دقیقه</span></h2>
+                <ul class="check">
+                    <li dir="rtl">همه‌ی بندهای تکلیف پوشش داده شده‌اند</li>
+                    <li dir="rtl"><span class="de">Sie, Ihnen, Ihr</span> — با حرف بزرگ</li>
+                    <li dir="rtl">فعل در جای درست (جای دوم / آخر جمله)</li>
+                    <li dir="rtl">ویرگول پیش از <span class="de">weil, dass, wenn</span></li>
+                    <li dir="rtl">اسم‌ها — با حرف بزرگ</li>
+                    <li dir="rtl">درخواست مؤدبانه: <span class="de">Könnten Sie … ?</span></li>
+                    <li dir="rtl">عبارت پایانی بدون ویرگول، نام در خط بعد</li>
+                </ul>
+                <div class="time" dir="rtl"><div class="a">برنامه ۳</div><div class="b">نوشتن ۲۰ دقیقه</div><div class="c">بازبینی ۷</div></div>
+            </div>
+            <div class="card">
+                <h2><span dir="rtl">اگر کلمه را نمی‌دانید</span></h2>
+                <div class="rule"><span dir="rtl">توصیف کنید، اما بند را رها نکنید:</span><span class="de">das Gerät, mit dem man Wasser kocht</span></div>
+                <div class="rule"><span dir="rtl">درخواست — فقط مؤدبانه:</span><span class="de">Könnten Sie … ? · Ich möchte Sie bitten, … zu …</span> <span class="ru"><bdi dir="rtl">(نه <i dir="ltr">Ich will</i>)</bdi></span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2><span dir="rtl">۲۴ فعل: مصدر · <span dir="ltr">Partizip II</span> (<span dir="ltr">Perfekt: Ich habe + Partizip II</span>؛ دو فعل آخر با <span dir="ltr">ist</span>)</span></h2>
+        <div class="verbs">
+            <div><span class="de v">bitten</span> <span class="de p">gebeten</span></div>
+            <div><span class="de v">schicken</span> <span class="de p">geschickt</span></div>
+            <div><span class="de v">mitteilen</span> <span class="de p">mitgeteilt</span></div>
+            <div><span class="de v">antworten</span> <span class="de p">geantwortet</span></div>
+            <div><span class="de v">bestätigen</span> <span class="de p">bestätigt</span></div>
+            <div><span class="de v">erreichen</span> <span class="de p">erreicht</span></div>
+            <div><span class="de v">zurückrufen</span> <span class="de p">zurückgerufen</span></div>
+            <div><span class="de v">sich beschweren</span> <span class="de p">beschwert</span></div>
+            <div><span class="de v">reklamieren</span> <span class="de p">reklamiert</span></div>
+            <div><span class="de v">reparieren</span> <span class="de p">repariert</span></div>
+            <div><span class="de v">ersetzen</span> <span class="de p">ersetzt</span></div>
+            <div><span class="de v">erstatten</span> <span class="de p">erstattet</span></div>
+            <div><span class="de v">verschieben</span> <span class="de p">verschoben</span></div>
+            <div><span class="de v">vereinbaren</span> <span class="de p">vereinbart</span></div>
+            <div><span class="de v">absagen</span> <span class="de p">abgesagt</span></div>
+            <div><span class="de v">kündigen</span> <span class="de p">gekündigt</span></div>
+            <div><span class="de v">bestellen</span> <span class="de p">bestellt</span></div>
+            <div><span class="de v">sich anmelden</span> <span class="de p">angemeldet</span></div>
+            <div><span class="de v">teilnehmen</span> <span class="de p">teilgenommen</span></div>
+            <div><span class="de v">sich entschuldigen</span> <span class="de p">entschuldigt</span></div>
+            <div><span class="de v">vorschlagen</span> <span class="de p">vorgeschlagen</span></div>
+            <div><span class="de v">hoffen</span> <span class="de p">gehofft</span></div>
+            <div><span class="de v">passieren</span> <span class="de p">ist passiert</span></div>
+            <div><span class="de v">vorbeikommen</span> <span class="de p">ist vorbeigekommen</span></div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

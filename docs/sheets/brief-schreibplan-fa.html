@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fa" dir="ltr">
+<head>
+<!-- Persian edition: German is unchanged, Russian explanations replaced with Persian (isolated RTL runs). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schreibplan — نوشتن نامه در ۳۰ دقیقه</title>
+
+<style>
+    @page { size: A4; margin: 8mm 10mm; }
+
+    * { box-sizing: border-box; }
+
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    body {
+        margin: 0;
+        font: 8.8pt/1.3 "Segoe UI", Arial, sans-serif;
+        color: #1b2233;
+        background: #fff;
+    }
+
+    .page { width: 190mm; margin: 0 auto; }
+
+    .de { font-family: "Sitka Text", Charter, Georgia, Cambria, serif; color: #13203f; }
+    .hint { color: #8a93a8; font-size: 7.2pt; }
+
+    h1 { margin: 0; font-size: 16pt; letter-spacing: -0.01em; }
+    h2 { margin: 3mm 0 1.4mm; font-size: 9.2pt; color: #2f4fd0; text-transform: uppercase; letter-spacing: 0.05em; }
+    h2 .n { display: inline-block; width: 5mm; height: 5mm; margin-right: 1.6mm; border-radius: 50%; background: #2f4fd0; color: #fff; text-align: center; font-size: 8pt; line-height: 5mm; letter-spacing: 0; }
+
+    /* ---------- шапка ---------- */
+    .top { display: grid; grid-template-columns: 1fr 78mm; gap: 6mm; align-items: end; }
+    .sub { margin: 0.8mm 0 0; color: #5b6478; font-size: 8.4pt; }
+    .fields { border: 0.8pt solid #b9c1d6; border-radius: 2mm; padding: 1.6mm 3mm; background: #fbfcff; font-size: 8pt; }
+    .fields div { display: flex; align-items: baseline; gap: 1.6mm; padding: 0.5mm 0; }
+    .fields .fl { flex: 1; border-bottom: 0.5pt solid #b8c0d4; min-height: 3.6mm; }
+    .box { display: inline-block; width: 3.6mm; height: 3.6mm; border: 0.8pt solid #2f4fd0; border-radius: 0.8mm; vertical-align: -0.6mm; margin: 0 0.6mm 0 1.4mm; }
+
+    .time { display: flex; margin-top: 2.6mm; border-radius: 1.6mm; overflow: hidden; font-size: 7.6pt; line-height: 1.2; }
+    .time div { padding: 1.1mm 2mm; color: #fff; }
+    .time small { display: block; font-size: 6.8pt; opacity: 0.85; }
+    .time .a { flex: 3; background: #6d83e8; }
+    .time .b { flex: 20; background: #2f4fd0; }
+    .time .c { flex: 7; background: #1d8f5d; }
+
+    /* ---------- линии для письма ---------- */
+    .lines { background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 6.5mm, #c3cadb 6.5mm, #c3cadb 7mm); }
+
+    /* ---------- 1 · задание ---------- */
+    .task { border: 0.8pt solid #d3d9e8; border-radius: 1.8mm; padding: 1.6mm 3mm 1.8mm; }
+    .task .row { display: flex; align-items: baseline; gap: 2.4mm; padding: 0.4mm 0; }
+    .task .row b { white-space: nowrap; }
+    .task .row .fl { flex: 1; border-bottom: 0.5pt solid #b8c0d4; min-height: 4.4mm; }
+
+    /* ---------- 2 · пункты ---------- */
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th { padding: 0 1.4mm 0.8mm 0; text-align: left; font-size: 7pt; font-weight: 700; color: #66708a; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1pt solid #2f4fd0; }
+    td { padding: 0; vertical-align: top; border-bottom: 0.5pt dashed #c3cadb; }
+    th:nth-child(1), td:nth-child(1) { width: 17mm; }
+    th:nth-child(2), td:nth-child(2) { width: 38mm; }
+    th:nth-child(3), td:nth-child(3) { width: 30mm; }
+    th:nth-child(5), td:nth-child(5) { width: 27mm; }
+    td + td { border-left: 0.6pt solid #c3cadb; }
+    th + th { padding-left: 1.4mm; }
+    td.num { padding: 1.2mm 1.6mm 1.2mm 0; font-weight: 700; color: #2f4fd0; font-size: 11pt; line-height: 1; }
+    td.num small { display: block; margin-top: 0.8mm; font-size: 6.8pt; font-weight: 400; color: #8a93a8; line-height: 1.15; }
+    td.w { height: 26.5mm; padding: 0 1.4mm; }
+    td.sent { padding: 0 1.4mm; }
+    td.conn { padding: 1.4mm 0 0 1.4mm; font-size: 6.8pt; color: #8a93a8; line-height: 1.35; }
+    td.conn .de { font-size: 7.4pt; color: #8a93a8; }
+    td.conn b { display: block; margin-top: 7.4mm; font-size: 7.2pt; color: #2f4fd0; }
+
+    /* ---------- 3 · рамка ---------- */
+    .frame { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2mm 6mm; }
+    .fr { display: grid; grid-template-columns: 22mm 1fr; align-items: end; gap: 2mm; padding: 0.4mm 0; }
+    .fr .l { font-size: 7.8pt; font-weight: 700; color: #2f4fd0; line-height: 1.15; }
+    .fr .l small { display: block; font-weight: 400; color: #8a93a8; font-size: 6.8pt; }
+    .fr .fl { border-bottom: 0.5pt solid #b8c0d4; min-height: 6.4mm; }
+    .fr .pre { padding-bottom: 0.4mm; border-bottom: 0.5pt solid #b8c0d4; min-height: 6.4mm; display: flex; align-items: flex-end; font-size: 9pt; }
+
+    /* ---------- 4 · счётчики ---------- */
+    .count { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+    .strip { display: flex; gap: 1.1mm; margin: 0.8mm 0 1.2mm; }
+    .strip span { flex: 1; height: 6mm; border: 0.8pt solid #aeb7cd; border-radius: 1mm; text-align: center; font-size: 7.4pt; line-height: 5.4mm; color: #66708a; }
+    .strip span.goal { border-color: #2f4fd0; background: #eef2ff; color: #2f4fd0; font-weight: 700; }
+    .strip.round span { border-radius: 50%; height: 5.4mm; flex: none; width: 5.4mm; }
+    .cap { font-size: 7.6pt; color: #5b6478; }
+
+    /* ---------- 5 · проверка ---------- */
+    .check { columns: 2; column-gap: 6mm; margin: 0; padding: 0; list-style: none; font-size: 8.2pt; line-height: 1.3; }
+    .check li { break-inside: avoid; margin: 0 0 1.2mm; padding-left: 5.4mm; position: relative; }
+    .check li::before { content: ""; position: absolute; left: 0; top: 0.3mm; width: 3.6mm; height: 3.6mm; border: 0.8pt solid #1d8f5d; border-radius: 0.8mm; }
+
+    /* ---------- что подставить ---------- */
+    .starters { margin-top: 3mm; padding: 1.8mm 3mm; border-radius: 1.6mm; background: #eef2ff; font-size: 7.8pt; line-height: 1.4; }
+    .starters b { color: #2f4fd0; }
+    .starters .de { font-size: 8.2pt; }
+    .starters span.sep { color: #9aa6d6; padding: 0 1.2mm; }
+
+    /* ---------- персидское издание ---------- */
+    body { font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+    h1, h2, th, .lab, .num, .skel b, .skel span, .time div, td.p, .fr .l, .strip span, .cap, .task .row b, .fields, .check li, .starters, .rule b {
+        letter-spacing: 0 !important; text-transform: none !important;
+    }
+    [dir="rtl"] .de { direction: ltr; unicode-bidi: isolate; }
+    span[dir="rtl"], b[dir="rtl"], bdi[dir="rtl"], small[dir="rtl"], th span { font-family: Tahoma, "Segoe UI", Arial, sans-serif; }
+    .sub[dir="rtl"], .cap[dir="rtl"], .skel-tot[dir="rtl"], .starters[dir="rtl"], div.ru[dir="rtl"] { text-align: right; }
+    .check li[dir="rtl"] { padding-left: 0; padding-right: 5.4mm; }
+    .check li[dir="rtl"]::before { left: auto; right: 0; }
+    .hint { direction: rtl; unicode-bidi: isolate; }
+    .fields div { direction: rtl; }
+    .fields .de { direction: ltr; }
+    .time[dir="rtl"] div { text-align: right; }
+    td.conn .de { display: block; direction: ltr; text-align: left; }
+    .f td.p small, .plan td.part small, td.num small { text-align: left; }
+    h1 { direction: rtl; text-align: right; }
+    .top { direction: rtl; }
+    .top .sub { text-align: right; }
+</style>
+</head>
+<body>
+<section class="page">
+
+    <div class="top">
+        <div>
+            <h1>Schreibplan · <span dir="rtl">نوشتن نامه در ۳۰ دقیقه</span></h1>
+            <p class="sub" dir="rtl">برگه‌ی خالی: بندهای تکلیف ← کلمه‌ها ← جمله‌ها ← بازبینی. در هر تمرین آن را با دست پر کنید؛ در امتحان هم همین طرح را روی برگه‌ی پیش‌نویس بکشید.</p>
+        </div>
+        <div class="fields">
+            <div><b dir="rtl">تاریخ</b> <span class="fl"></span> <b dir="rtl">تکلیف</b> <span class="box"></span> A <span class="box"></span> B</div>
+            <div><b dir="rtl">گیرنده</b> <span class="box"></span> Sie <span class="box"></span> du <span class="fl"></span></div>
+            <div><b dir="rtl">مجموع کلمه‌ها</b> <span class="fl"></span> <b dir="rtl">زمان</b> <span class="fl"></span></div>
+        </div>
+    </div>
+
+    <div class="time" dir="rtl">
+        <div class="a"><span dir="rtl">برنامه‌ریزی · ۳ دقیقه</span><small dir="ltr">0:00–0:03</small></div>
+        <div class="b"><span dir="rtl">نوشتن · ۲۰ دقیقه</span><small dir="ltr">0:03–0:23</small></div>
+        <div class="c"><span dir="rtl">بازبینی · ۷ دقیقه</span><small dir="ltr">0:23–0:30</small></div>
+    </div>
+
+    <h2><span class="n" dir="ltr">1</span><span dir="rtl">تکلیف</span></h2>
+    <div class="task">
+        <div class="row"><b dir="rtl">به چه کسی و برای چه می‌نویسم:</b> <span class="fl"></span></div>
+        <div class="row"><span class="fl"></span></div>
+        <div class="row"><b dir="rtl">خطاب:</b> <span class="fl"></span> <span class="hint">Sehr geehrter Herr …, · Sehr geehrte Damen und Herren, · Liebe …,</span></div>
+    </div>
+
+    <h2><span class="n" dir="ltr">2</span><span dir="rtl">بندهای تکلیف ← جمله‌های من</span></h2>
+    <table>
+        <thead><tr><th><span dir="rtl">بند</span></th><th><span dir="rtl">بند تکلیف (از متن)</span></th><th><span dir="rtl">کلمه‌های من (۲ تا ۳)</span></th><th><span dir="rtl">جمله‌ی من (پیش‌نویس)</span></th><th><span dir="rtl">حرف ربط</span></th></tr></thead>
+        <tbody>
+            <tr><td class="num">1<small><span dir="rtl">معمولاً:<br>دلیل</span></small></td><td class="w lines"></td><td class="w lines"></td><td class="sent lines"></td><td class="conn"><span class="de">aber · deshalb<br>außerdem · dann<br>trotzdem</span><b dir="rtl">انتخاب من: ____</b></td></tr>
+            <tr><td class="num">2<small><span dir="rtl">معمولاً:<br>عذرخواهی</span></small></td><td class="w lines"></td><td class="w lines"></td><td class="sent lines"></td><td class="conn"><span class="de">aber · deshalb<br>außerdem · dann<br>trotzdem</span><b dir="rtl">انتخاب من: ____</b></td></tr>
+            <tr><td class="num">3<small><span dir="rtl">معمولاً:<br>درخواست</span></small></td><td class="w lines"></td><td class="w lines"></td><td class="sent lines"></td><td class="conn"><span class="de">aber · deshalb<br>außerdem · dann<br>trotzdem</span><b dir="rtl">انتخاب من: ____</b></td></tr>
+            <tr><td class="num">4<small><span dir="rtl">معمولاً:<br>برنامه، مهلت</span></small></td><td class="w lines"></td><td class="w lines"></td><td class="sent lines"></td><td class="conn"><span class="de">aber · deshalb<br>außerdem · dann<br>trotzdem</span><b dir="rtl">انتخاب من: ____</b></td></tr>
+        </tbody>
+    </table>
+
+    <h2><span class="n" dir="ltr">3</span><span dir="rtl">چارچوب نامه</span></h2>
+    <div class="frame">
+        <div class="fr"><div class="l">دلیل نوشتن<small dir="ltr">Anlass</small></div><div class="fl"></div></div>
+        <div class="fr"><div class="l">تشکر<small dir="ltr">Dank</small></div><div class="fl"></div></div>
+        <div class="fr"><div class="l">تماس<small dir="ltr">Kontakt</small></div><div class="fl"></div></div>
+        <div class="fr"><div class="l">عبارت پایانی<small dir="ltr">Schluss</small></div><div class="pre"><span class="de">Mit freundlichen Grüßen</span>&nbsp;<span class="hint"><span dir="rtl">+ نام، بدون ویرگول</span></span></div></div>
+    </div>
+
+    <div class="count">
+        <div>
+            <h2><span class="n" dir="ltr">4</span><span dir="rtl">تا اینجا چقدر نوشته‌ام</span></h2>
+            <div class="cap" dir="rtl"><span dir="rtl">جمله‌ها — برای هر جمله یک دایره را رنگ کنید (هدف ۷ تا ۹):</span></div>
+            <div class="strip round"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span class="goal">7</span><span class="goal">8</span><span class="goal">9</span></div>
+            <div class="cap" dir="rtl"><span dir="rtl">کلمه‌ها — وقتی به عدد رسیدید علامت بزنید (هدف حدود ۸۰، بازه‌ی مناسب ۷۰ تا ۱۱۰):</span></div>
+            <div class="strip"><span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>60</span><span>70</span><span class="goal">80</span><span>90</span><span>100</span></div>
+        </div>
+        <div>
+            <h2><span class="n" dir="ltr">5</span><span dir="rtl">بازبینی (دقیقه‌های آخر)</span></h2>
+            <ul class="check">
+                <li dir="rtl">همه‌ی بندهای تکلیف پوشش داده شده‌اند</li>
+                <li dir="rtl"><span class="de">Sie, Ihnen, Ihr</span> — با حرف بزرگ</li>
+                <li dir="rtl">فعل: جای دوم؛ بعد از <span class="de">weil, dass, wenn</span> — آخر جمله</li>
+                <li dir="rtl">ویرگول پیش از <span class="de">weil, dass, wenn</span></li>
+                <li dir="rtl">اسم‌ها — با حرف بزرگ</li>
+                <li dir="rtl">درخواست مؤدبانه: <span class="de">Könnten Sie … ?</span></li>
+                <li dir="rtl">عبارت پایانی بدون ویرگول + نام</li>
+                <li dir="rtl">حدود ۸۰ کلمه (۷۰ تا ۱۱۰)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="starters" dir="rtl">
+        <b dir="rtl">در هر بند چه بنویسیم:</b>
+        دلیل <span class="de">Ich bin seit …, weil …</span><span class="sep">·</span>
+        عذرخواهی <span class="de">Bitte entschuldigen Sie …</span><span class="sep">·</span>
+        درخواست <span class="de">Könnten Sie mir bitte … ?</span><span class="sep">·</span>
+        برنامه <span class="de">Ich schlage vor, …</span><span class="sep">·</span>
+        مهلت <span class="de">Bitte antworten Sie mir bis zum …</span><span class="sep">·</span>
+        تشکر <span class="de">Vielen Dank für Ihr Verständnis.</span>
+    </div>
+
+</section>
+</body>
+</html>
